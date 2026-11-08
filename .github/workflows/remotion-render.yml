@@ -38,12 +38,14 @@ jobs:
     defaults:
       run:
         working-directory: ${{ github.workspace }}
+        shell: bash
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: DEBUG - Show workspace
         run: |
+          set -euo pipefail
           echo "=== WORKSPACE ==="
           pwd
           ls -la
@@ -51,7 +53,7 @@ jobs:
           cat package.json | head -50
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.1.0
         with:
           node-version: '22'
           cache: 'npm'
@@ -59,6 +61,7 @@ jobs:
 
       - name: DEBUG - Node/npm versions
         run: |
+          set -euo pipefail
           echo "=== NODE VERSION ==="
           node --version
           echo "=== NPM VERSION ==="
@@ -66,11 +69,13 @@ jobs:
 
       - name: Install dependencies
         run: |
+          set -euo pipefail
           echo "=== INSTALLING DEPS ==="
           npm install --legacy-peer-deps 2>&1 | tail -30
 
       - name: DEBUG - Verify node_modules
         run: |
+          set -euo pipefail
           echo "=== NODE_MODULES.BIN ==="
           ls -la node_modules/.bin/ | head -30
           which npx
@@ -78,6 +83,7 @@ jobs:
 
       - name: Install Chromium dependencies
         run: |
+          set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y \
             libnspr4 libnss3 libdrm2 libxkbcommon0 libxcomposite1 \
@@ -92,11 +98,13 @@ jobs:
 
       - name: Build Remotion project
         run: |
+          set -euo pipefail
           echo "=== BUILDING ==="
           npm run build 2>&1 | tail -50
 
       - name: DEBUG - Verify build
         run: |
+          set -euo pipefail
           echo "=== DIST FOLDER ==="
           ls -la dist/
           echo "=== ROOT.TSX EXISTS ==="
@@ -109,6 +117,7 @@ jobs:
         env:
           COMPOSITION: ${{ github.event.inputs.composition }}
         run: |
+          set -euo pipefail
           echo "=== RENDERING: $COMPOSITION ==="
           npx remotion render src/Root.tsx $COMPOSITION out/video.mp4 \
             --concurrency=4 \
@@ -117,6 +126,7 @@ jobs:
 
       - name: DEBUG - Verify video
         run: |
+          set -euo pipefail
           echo "=== OUTPUT ==="
           ls -la out/
           file out/video.mp4
@@ -132,6 +142,7 @@ jobs:
       - name: Print summary
         if: success()
         run: |
+          set -euo pipefail
           echo "OK Render completato!"
           echo "Composition: ${{ github.event.inputs.composition }}"
           echo "Duration: ${{ github.event.inputs.duration }}s"
@@ -141,5 +152,6 @@ jobs:
       - name: Print failure info
         if: failure()
         run: |
+          set -euo pipefail
           echo "FAIL Render fallito"
           echo "Exit code: ${{ job.status }}"
