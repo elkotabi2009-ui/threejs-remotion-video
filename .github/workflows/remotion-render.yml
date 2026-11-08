@@ -33,8 +33,8 @@ on:
 
 jobs:
   render:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
     defaults:
       run:
         working-directory: ${{ github.workspace }}
@@ -42,36 +42,44 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
-      - name: DEBUG - Show workspace
+      - name: DEBUG - Environment info
         run: |
           set -euo pipefail
+          echo "=== RUNNER INFO ==="
+          uname -a
+          echo "=== ENV ==="
+          env | grep -E '^(RUNNER|GITHUB|HOME|PATH)' | sort
           echo "=== WORKSPACE ==="
           pwd
           ls -la
-          echo "=== PACKAGE.JSON ==="
-          cat package.json | head -50
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
-
-      - name: DEBUG - Node/npm versions
+      - name: Install Node.js 22 manually (bypass setup-node issues)
         run: |
           set -euo pipefail
+          echo "=== INSTALLING NODE 22 VIA NODESOURCE ==="
+          curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+          sudo apt-get install -y nodejs
           echo "=== NODE VERSION ==="
           node --version
           echo "=== NPM VERSION ==="
           npm --version
 
-      - name: Install dependencies
+      - name: DEBUG - Verify package files
+        run: |
+          set -euo pipefail
+          echo "=== PACKAGE.JSON ==="
+          cat package.json
+          echo "=== PACKAGE-LOCK.JSON EXISTS ==="
+          ls -la package-lock.json
+
+      - name: Install dependencies (no cache, legacy peer deps)
         run: |
           set -euo pipefail
           echo "=== INSTALLING DEPS ==="
-          npm install --legacy-peer-deps 2>&1 | tail -30
+          npm install --legacy-peer-deps --no-audit --no-fund 2>&1 | tail -50
 
       - name: DEBUG - Verify node_modules
         run: |
@@ -80,10 +88,13 @@ jobs:
           ls -la node_modules/.bin/ | head -30
           which npx
           npx --version
+          echo "=== REMotion CLI ==="
+          npx remotion --version
 
-      - name: Install Chromium dependencies
+      - name: Install Chromium dependencies (headless)
         run: |
           set -euo pipefail
+          echo "=== INSTALLING CHROMIUM DEPS ==="
           sudo apt-get update
           sudo apt-get install -y \
             libnspr4 libnss3 libdrm2 libxkbcommon0 libxcomposite1 \
@@ -96,16 +107,16 @@ jobs:
             libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 \
             lsb-release xdg-utils wget
 
-      - name: Build Remotion project (TypeScript compile)
+      - name: TypeScript compile check
         run: |
           set -euo pipefail
-          echo "=== TYPESCRIPT COMPILE ==="
+          echo "=== TYPESCRIPT CHECK ==="
           npx tsc --noEmit 2>&1 | tail -30
 
-      - name: DEBUG - Verify source
+      - name: DEBUG - Verify source & compositions
         run: |
           set -euo pipefail
-          echo "=== ROOT.TSX EXISTS ==="
+          echo "=== ROOT.TSX ==="
           ls -la src/Root.tsx
           echo "=== COMPOSITIONS ==="
           npx remotion compositions src/Root.tsx
@@ -117,18 +128,20 @@ jobs:
         run: |
           set -euo pipefail
           echo "=== RENDERING: $COMPOSITION ==="
+          echo "Start: $(date)"
           npx remotion render src/Root.tsx $COMPOSITION out/video.mp4 \
             --concurrency=4 \
             --quality=80 \
             --log-level=info 2>&1
+          echo "End: $(date)"
 
-      - name: DEBUG - Verify video
+      - name: DEBUG - Verify video output
         run: |
           set -euo pipefail
           echo "=== OUTPUT ==="
           ls -la out/
           file out/video.mp4
-          ls -la out/video.mp4
+          ls -lh out/video.mp4
 
       - name: Upload video artifact
         uses: actions/upload-artifact@v4
@@ -141,15 +154,16 @@ jobs:
         if: success()
         run: |
           set -euo pipefail
-          echo "OK Render completato!"
+          echo "✅ RENDER COMPLETATO!"
           echo "Composition: ${{ github.event.inputs.composition }}"
           echo "Duration: ${{ github.event.inputs.duration }}s"
           echo "Platform: ${{ github.event.inputs.platform }}"
-          echo "Download: Actions -> Artifacts -> rendered-video-${{ github.event.inputs.composition }}-${{ github.run_number }}"
+          echo "Download: Actions → Artifacts → rendered-video-${{ github.event.inputs.composition }}-${{ github.run_number }}"
 
       - name: Print failure info
         if: failure()
         run: |
           set -euo pipefail
-          echo "FAIL Render fallito"
+          echo "❌ RENDER FALLITO"
           echo "Exit code: ${{ job.status }}"
+          echo "Check step logs above for exact error"
