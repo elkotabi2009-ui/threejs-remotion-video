@@ -4,22 +4,23 @@ on:
   workflow_dispatch:
     inputs:
       composition:
-        description: "Composition ID (MainVideo, VerticalVideo, SquareVideo, PreviewVideo)"
+        description: "Composition ID to render"
         required: true
-        default: "VerticalVideo"
+        default: "hholmes-video"
         type: choice
         options:
-          - MainVideo
-          - VerticalVideo
-          - SquareVideo
-          - PreviewVideo
+          - hholmes-video
+          - hholmes-preview
+          - test-video
+          - test-video-square
+          - test-video-landscape
       duration:
-        description: "Duration in seconds"
+        description: "Duration in seconds (for test-video compositions)"
         required: false
-        default: "15"
+        default: "3"
         type: string
       platform:
-        description: "Target platform"
+        description: "Target platform (informational)"
         required: false
         default: "tiktok"
         type: choice
@@ -129,11 +130,31 @@ jobs:
           set -euo pipefail
           echo "=== RENDERING: $COMPOSITION ==="
           echo "Start: $(date)"
+
+          # Set render params based on composition
+          if [[ "$COMPOSITION" == "test-video" ]]; then
+            CONCURRENCY=4
+            QUALITY=80
+          elif [[ "$COMPOSITION" == "hholmes-video" ]]; then
+            CONCURRENCY=2
+            QUALITY=70
+          else
+            CONCURRENCY=4
+            QUALITY=80
+          fi
+
+          echo "Concurrency: $CONCURRENCY, Quality: $QUALITY"
+
           npx remotion render src/Root.tsx $COMPOSITION out/video.mp4 \
-            --concurrency=4 \
-            --quality=80 \
+            --concurrency=$CONCURRENCY \
+            --quality=$QUALITY \
             --log-level=info 2>&1
+          RENDER_EXIT=$?
           echo "End: $(date)"
+          if [ $RENDER_EXIT -ne 0 ]; then
+            echo "Render failed with exit code $RENDER_EXIT"
+            exit $RENDER_EXIT
+          fi
 
       - name: DEBUG - Verify video output
         run: |
@@ -158,7 +179,8 @@ jobs:
           echo "Composition: ${{ github.event.inputs.composition }}"
           echo "Duration: ${{ github.event.inputs.duration }}s"
           echo "Platform: ${{ github.event.inputs.platform }}"
-          echo "Download: Actions → Artifacts → rendered-video-${{ github.event.inputs.composition }}-${{ github.run_number }}"
+          echo "Artifact: rendered-video-${{ github.event.inputs.composition }}-${{ github.run_number }}"
+          echo "Download from: Actions → Artifacts"
 
       - name: Print failure info
         if: failure()
