@@ -33,7 +33,7 @@ on:
 
 jobs:
   render:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     defaults:
       run:
@@ -42,12 +42,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug - Show workspace structure
-        run: |
-          pwd
-          ls -la
-          cat package.json | head -30
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -55,20 +49,9 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
-      - name: Debug - Node and npm versions
-        run: |
-          node --version
-          npm --version
-          npm list --depth=0
-
       - name: Install dependencies
         run: |
-          npm install --legacy-peer-deps 2>&1 | tail -20
-
-      - name: Debug - Verify node_modules
-        run: |
-          ls -la node_modules/.bin/ | head -20
-          which npx
+          npm ci --legacy-peer-deps
 
       - name: Install Chromium dependencies
         run: |
@@ -86,13 +69,11 @@ jobs:
 
       - name: Build Remotion project
         run: |
-          npm run build 2>&1 | tail -30
+          npm run build
 
-      - name: Debug - Verify build output
+      - name: Verify build output
         run: |
-          ls -la dist/
-          ls -la src/
-          npx remotion compositions src/Root.tsx
+          npx remotion compositions dist/Root.js
 
       - name: Render video
         id: render
@@ -100,12 +81,12 @@ jobs:
           COMPOSITION: ${{ github.event.inputs.composition }}
         run: |
           echo "Rendering composition: $COMPOSITION"
-          npx remotion render src/Root.tsx $COMPOSITION out/video.mp4 \
+          npx remotion render dist/Root.js $COMPOSITION out/video.mp4 \
             --concurrency=4 \
             --quality=80 \
-            --log-level=info 2>&1
+            --log-level=info
 
-      - name: Debug - Verify video output
+      - name: Verify video output
         run: |
           ls -la out/
           file out/video.mp4
