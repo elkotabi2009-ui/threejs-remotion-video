@@ -42,6 +42,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: DEBUG - Show workspace
+        run: |
+          echo "=== WORKSPACE ==="
+          pwd
+          ls -la
+          echo "=== PACKAGE.JSON ==="
+          cat package.json | head -50
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -49,9 +57,24 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
+      - name: DEBUG - Node/npm versions
+        run: |
+          echo "=== NODE VERSION ==="
+          node --version
+          echo "=== NPM VERSION ==="
+          npm --version
+
       - name: Install dependencies
         run: |
-          npm ci --legacy-peer-deps
+          echo "=== INSTALLING DEPS ==="
+          npm install --legacy-peer-deps 2>&1 | tail -30
+
+      - name: DEBUG - Verify node_modules
+        run: |
+          echo "=== NODE_MODULES.BIN ==="
+          ls -la node_modules/.bin/ | head -30
+          which npx
+          npx --version
 
       - name: Install Chromium dependencies
         run: |
@@ -69,27 +92,35 @@ jobs:
 
       - name: Build Remotion project
         run: |
-          npm run build
+          echo "=== BUILDING ==="
+          npm run build 2>&1 | tail -50
 
-      - name: Verify build output
+      - name: DEBUG - Verify build
         run: |
-          npx remotion compositions dist/Root.js
+          echo "=== DIST FOLDER ==="
+          ls -la dist/
+          echo "=== ROOT.TSX EXISTS ==="
+          ls -la src/Root.tsx
+          echo "=== COMPOSITIONS ==="
+          npx remotion compositions src/Root.tsx
 
       - name: Render video
         id: render
         env:
           COMPOSITION: ${{ github.event.inputs.composition }}
         run: |
-          echo "Rendering composition: $COMPOSITION"
-          npx remotion render dist/Root.js $COMPOSITION out/video.mp4 \
+          echo "=== RENDERING: $COMPOSITION ==="
+          npx remotion render src/Root.tsx $COMPOSITION out/video.mp4 \
             --concurrency=4 \
             --quality=80 \
-            --log-level=info
+            --log-level=info 2>&1
 
-      - name: Verify video output
+      - name: DEBUG - Verify video
         run: |
+          echo "=== OUTPUT ==="
           ls -la out/
           file out/video.mp4
+          ls -la out/video.mp4
 
       - name: Upload video artifact
         uses: actions/upload-artifact@v4
@@ -101,15 +132,14 @@ jobs:
       - name: Print summary
         if: success()
         run: |
-          echo "✅ Render completato!"
-          echo "📁 Composition: ${{ github.event.inputs.composition }}"
-          echo "⏱️  Duration: ${{ github.event.inputs.duration }}s"
-          echo "📱 Platform: ${{ github.event.inputs.platform }}"
-          echo "📥 Scarica da: Actions → Artifacts → rendered-video-${{ github.event.inputs.composition }}-${{ github.run_number }}"
+          echo "OK Render completato!"
+          echo "Composition: ${{ github.event.inputs.composition }}"
+          echo "Duration: ${{ github.event.inputs.duration }}s"
+          echo "Platform: ${{ github.event.inputs.platform }}"
+          echo "Download: Actions -> Artifacts -> rendered-video-${{ github.event.inputs.composition }}-${{ github.run_number }}"
 
       - name: Print failure info
         if: failure()
         run: |
-          echo "❌ Render fallito"
-          echo "Controlla i log sopra per l'errore"
+          echo "FAIL Render fallito"
           echo "Exit code: ${{ job.status }}"
