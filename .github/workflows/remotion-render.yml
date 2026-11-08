@@ -4,16 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       composition:
-        description: "Composition ID to render"
+        description: "Composition ID to render (start with test-video to verify pipeline)"
         required: true
-        default: "hholmes-video"
+        default: "test-video"
         type: choice
         options:
-          - hholmes-video
-          - hholmes-preview
           - test-video
           - test-video-square
           - test-video-landscape
+          - hholmes-video
+          - hholmes-preview
       duration:
         description: "Duration in seconds (for test-video compositions)"
         required: false
@@ -124,6 +124,13 @@ jobs:
           fi
           echo "=== TYPESCRIPT CHECK DONE ==="
 
+      - name: Ensure output directory exists
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          echo "=== OUTPUT DIR READY ==="
+          ls -la out/
+
       - name: DEBUG - Verify source & compositions
         run: |
           set -euo pipefail
@@ -155,17 +162,24 @@ jobs:
           fi
 
           echo "Concurrency: $CONCURRENCY, Quality: $QUALITY"
+          echo "Free memory: $(free -h | grep Mem | awk '{print $7}')"
 
+          # Render with explicit error capture
           npx remotion render src/Root.tsx $COMPOSITION out/video.mp4 \
             --concurrency=$CONCURRENCY \
             --quality=$QUALITY \
-            --log-level=info 2>&1
-          RENDER_EXIT=$?
+            --log-level=verbose 2>&1 | tee render.log
+          RENDER_EXIT=${PIPESTATUS[0]}
           echo "End: $(date)"
+
           if [ $RENDER_EXIT -ne 0 ]; then
-            echo "Render failed with exit code $RENDER_EXIT"
+            echo "=== RENDER FAILED (exit $RENDER_EXIT) ==="
+            echo "Last 50 lines of render.log:"
+            tail -50 render.log
             exit $RENDER_EXIT
           fi
+
+          echo "=== RENDER SUCCEEDED ==="
 
       - name: DEBUG - Verify video output
         run: |
