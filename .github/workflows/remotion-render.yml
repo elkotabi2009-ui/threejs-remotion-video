@@ -41,7 +41,7 @@ jobs:
         shell: bash
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v4
 
       - name: DEBUG - Show workspace
         run: |
@@ -53,7 +53,7 @@ jobs:
           cat package.json | head -50
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
@@ -96,17 +96,15 @@ jobs:
             libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 \
             lsb-release xdg-utils wget
 
-      - name: Build Remotion project
+      - name: Build Remotion project (TypeScript compile)
         run: |
           set -euo pipefail
-          echo "=== BUILDING ==="
-          npm run build 2>&1 | tail -50
+          echo "=== TYPESCRIPT COMPILE ==="
+          npx tsc --noEmit 2>&1 | tail -30
 
-      - name: DEBUG - Verify build
+      - name: DEBUG - Verify source
         run: |
           set -euo pipefail
-          echo "=== DIST FOLDER ==="
-          ls -la dist/
           echo "=== ROOT.TSX EXISTS ==="
           ls -la src/Root.tsx
           echo "=== COMPOSITIONS ==="
