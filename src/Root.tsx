@@ -8,7 +8,7 @@ import { VerificationVideoComposition, VerificationVideoSquare, VerificationVide
 // Extend Three.js namespace for R3F - must be done before any components render
 extend(THREE);
 extend({
-  DirectionalLightShadow: THREE.DirectionalLightShadow,
+  // Core Three.js classes
   Vector2: THREE.Vector2,
   Vector3: THREE.Vector3,
   Vector4: THREE.Vector4,
@@ -21,10 +21,27 @@ extend({
   CanvasTexture: THREE.CanvasTexture,
   CubeTexture: THREE.CubeTexture,
   DataTexture: THREE.DataTexture,
-  DataTexture3D: THREE.DataTexture3D,
   VideoTexture: THREE.VideoTexture,
   RenderTarget: THREE.RenderTarget,
   WebGLRenderTarget: THREE.WebGLRenderTarget,
+  // Geometries
+  BoxGeometry: THREE.BoxGeometry,
+  CylinderGeometry: THREE.CylinderGeometry,
+  ConeGeometry: THREE.ConeGeometry,
+  PlaneGeometry: THREE.PlaneGeometry,
+  SphereGeometry: THREE.SphereGeometry,
+  BufferGeometry: THREE.BufferGeometry,
+  // Materials
+  MeshStandardMaterial: THREE.MeshStandardMaterial,
+  MeshBasicMaterial: THREE.MeshBasicMaterial,
+  MeshPhysicalMaterial: THREE.MeshPhysicalMaterial,
+  PointsMaterial: THREE.PointsMaterial,
+  // Objects
+  InstancedMesh: THREE.InstancedMesh,
+  Points: THREE.Points,
+  // Attributes
+  BufferAttribute: THREE.BufferAttribute,
+  Float32BufferAttribute: THREE.Float32BufferAttribute,
 });
 
 // Root component that registers all compositions

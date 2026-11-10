@@ -1,11 +1,12 @@
-import { Composition, AbsoluteFill, useVideoConfig } from "remotion";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Composition, AbsoluteFill, useVideoConfig, useCurrentFrame } from "remotion";
+import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
 import { Html, Environment } from "@react-three/drei";
 import { useRemotionTiming, useInterpolate } from "@/hooks/useRemotion";
 
-export function HHolmesVideo({ width, height }: { width: number; height: number }) {
-  const { frame, fps, durationInFrames } = useVideoConfig();
+export function HHolmesVideo() {
+  const frame = useCurrentFrame();
+  const { fps, durationInFrames, width, height } = useVideoConfig();
   const { progress, time } = useRemotionTiming();
 
   // ===== CAMERA ANIMATIONS (Simplified) =====
@@ -83,6 +84,60 @@ export function HHolmesVideo({ width, height }: { width: number; height: number 
   // Tone mapping exposure
   const exposure = isGasChamber ? 0.5 : 1;
 
+  // Pre-computed matrices for instanced meshes - flattened for Float32Array
+  const towerMatrices = new Float32Array([
+    ...new THREE.Matrix4().makeTranslation(-11, 15, 0).elements,
+    ...new THREE.Matrix4().makeTranslation(11, 15, 0).elements,
+    ...new THREE.Matrix4().makeTranslation(0, 17, 0).elements,
+  ]);
+
+  const roofMatrices = new Float32Array([
+    ...new THREE.Matrix4().makeTranslation(-11, 27, 0).elements,
+    ...new THREE.Matrix4().makeTranslation(11, 27, 0).elements,
+    ...new THREE.Matrix4().makeTranslation(0, 31, 0).elements,
+  ]);
+
+  const pipeMatrices = new Float32Array(
+    Array.from({ length: 40 }).flatMap((_, i) =>
+      [...new THREE.Matrix4().makeTranslation(i * 2 - 39, 5.5, 0).elements]
+    ).flat()
+  );
+
+  const doorMatrices = new Float32Array(
+    Array.from({ length: 10 }).flatMap((_, i) =>
+      [...new THREE.Matrix4().makeTranslation(i * 8 - 36, 0.9, -2.9).elements]
+    ).flat()
+  );
+
+  const wallMatrices = new Float32Array([
+    ...new THREE.Matrix4().makeTranslation(0, 1.4, -4).makeRotationY(0).elements,
+    ...new THREE.Matrix4().makeTranslation(0, 1.4, 4).makeRotationY(Math.PI).elements,
+    ...new THREE.Matrix4().makeTranslation(-5, 1.4, 0).makeRotationY(Math.PI / 2).elements,
+    ...new THREE.Matrix4().makeTranslation(5, 1.4, 0).makeRotationY(-Math.PI / 2).elements,
+  ]);
+
+  const juryMatrices = new Float32Array(
+    Array.from({ length: 12 }).flatMap((_, i) => {
+      const row = Math.floor(i / 6);
+      const col = i % 6;
+      return [...new THREE.Matrix4().makeTranslation(col * 1.1 - 2.7, 0.8, row === 0 ? -2.5 : 2.5).elements];
+    }).flat()
+  );
+
+  const spectatorMatrices = new Float32Array(
+    Array.from({ length: 20 }).flatMap((_, i) => {
+      const angle = (i / 20) * Math.PI * 2;
+      const r = 8 + Math.random() * 3;
+      return [...new THREE.Matrix4().makeTranslation(Math.cos(angle) * r, 0.5, 6 + Math.sin(angle) * r).elements];
+    }).flat()
+  );
+
+  const chicagoMatrices = new Float32Array(
+    Array.from({ length: 12 }).flatMap((_, i) =>
+      [...new THREE.Matrix4().makeTranslation(i * 4 - 24, 2 + Math.random() * 8, -25).elements]
+    ).flat()
+  );
+
   return (
     <AbsoluteFill style={{ background: "#020203" }}>
       <Canvas
@@ -122,22 +177,22 @@ export function HHolmesVideo({ width, height }: { width: number; height: number 
             <instancedMesh args={[null, null, 3]}>
               <cylinderGeometry args={[3, 2.5, 20, 6]} />
               <meshStandardMaterial color="#15100a" roughness={0.95} />
-              <arrayAttribute name="instanceMatrix" data={[
-                new THREE.Matrix4().makeTranslation(-11, 15, 0).elements,
-                new THREE.Matrix4().makeTranslation(11, 15, 0).elements,
-                new THREE.Matrix4().makeTranslation(0, 17, 0).elements,
-              ]} />
+              <bufferAttribute
+                attach="instanceMatrix"
+                array={new Float32Array(towerMatrices)}
+                itemSize={16}
+              />
             </instancedMesh>
 
             {/* Tower roofs */}
             <instancedMesh args={[null, null, 3]}>
               <coneGeometry args={[3.5, 6, 6]} />
               <meshStandardMaterial color="#251508" roughness={0.9} />
-              <arrayAttribute name="instanceMatrix" data={[
-                new THREE.Matrix4().makeTranslation(-11, 27, 0).elements,
-                new THREE.Matrix4().makeTranslation(11, 27, 0).elements,
-                new THREE.Matrix4().makeTranslation(0, 31, 0).elements,
-              ]} />
+              <bufferAttribute
+                attach="instanceMatrix"
+                array={new Float32Array(roofMatrices)}
+                itemSize={16}
+              />
             </instancedMesh>
 
             {/* Glowing windows - single plane with shader-like approach */}
@@ -184,11 +239,11 @@ export function HHolmesVideo({ width, height }: { width: number; height: number 
             <instancedMesh args={[null, null, 40]}>
               <cylinderGeometry args={[0.12, 0.12, 6, 6]} />
               <meshStandardMaterial color="#2a1a0a" roughness={0.75} metalness={0.5} />
-              <arrayAttribute name="instanceMatrix" data={
-                Array.from({ length: 40 }).flatMap((_, i) =>
-                  new THREE.Matrix4().makeTranslation(i * 2 - 39, 5.5, 0).elements
-                )
-              } />
+              <bufferAttribute
+                attach="instanceMatrix"
+                array={new Float32Array(pipeMatrices)}
+                itemSize={16}
+              />
             </instancedMesh>
 
             {/* Gaslight fixtures - instanced points with point lights */}
@@ -222,11 +277,11 @@ export function HHolmesVideo({ width, height }: { width: number; height: number 
             <instancedMesh args={[null, null, 10]}>
               <boxGeometry args={[2.2, 5, 0.15]} />
               <meshStandardMaterial color="#1a0f05" roughness={0.95} metalness={0.05} />
-              <arrayAttribute name="instanceMatrix" data={
-                Array.from({ length: 10 }).flatMap((_, i) =>
-                  new THREE.Matrix4().makeTranslation(i * 8 - 36, 0.9, -2.9).elements
-                )
-              } />
+              <bufferAttribute
+                attach="instanceMatrix"
+                array={new Float32Array(doorMatrices)}
+                itemSize={16}
+              />
             </instancedMesh>
 
             {/* Gas Chamber Room (revealed in pivot) */}
@@ -247,12 +302,11 @@ export function HHolmesVideo({ width, height }: { width: number; height: number 
                 <instancedMesh args={[null, null, 4]}>
                   <planeGeometry args={[10, 6]} />
                   <meshStandardMaterial color="#080303" roughness={0.98} />
-                  <arrayAttribute name="instanceMatrix" data={[
-                    new THREE.Matrix4().makeTranslation(0, 1.4, -4).rotateY(0).elements,
-                    new THREE.Matrix4().makeTranslation(0, 1.4, 4).rotateY(Math.PI).elements,
-                    new THREE.Matrix4().makeTranslation(-5, 1.4, 0).rotateY(Math.PI / 2).elements,
-                    new THREE.Matrix4().makeTranslation(5, 1.4, 0).rotateY(-Math.PI / 2).elements,
-                  ]} />
+                  <bufferAttribute
+                    attach="instanceMatrix"
+                    array={new Float32Array(wallMatrices)}
+                    itemSize={16}
+                  />
                 </instancedMesh>
 
                 {/* Gas inlet */}
@@ -263,7 +317,7 @@ export function HHolmesVideo({ width, height }: { width: number; height: number 
 
                 {/* Gas particles - simple points */}
                 {gasGlow > 0.3 && (
-                  <Points>
+                  <points>
                     <bufferGeometry>
                       <bufferAttribute
                         name="position"
@@ -274,7 +328,7 @@ export function HHolmesVideo({ width, height }: { width: number; height: number 
                       />
                     </bufferGeometry>
                     <pointsMaterial color="#ff5500" size={0.15} transparent opacity={0.4} sizeAttenuation />
-                  </Points>
+                  </points>
                 )}
 
                 {/* Furnace */}
@@ -327,26 +381,22 @@ export function HHolmesVideo({ width, height }: { width: number; height: number 
             <instancedMesh args={[null, null, 12]}>
               <cylinderGeometry args={[0.22, 0.18, 1.1, 8]} />
               <meshStandardMaterial color="#100804" />
-              <arrayAttribute name="instanceMatrix" data={
-                Array.from({ length: 12 }).flatMap((_, i) => {
-                  const row = Math.floor(i / 6);
-                  const col = i % 6;
-                  return new THREE.Matrix4().makeTranslation(col * 1.1 - 2.7, 0.8, row === 0 ? -2.5 : 2.5).elements;
-                })
-              } />
+              <bufferAttribute
+                attach="instanceMatrix"
+                array={new Float32Array(juryMatrices)}
+                itemSize={16}
+              />
             </instancedMesh>
 
             {/* Spectators - simple boxes */}
             <instancedMesh args={[null, null, 20]}>
               <boxGeometry args={[0.4, 1, 0.4]} />
               <meshStandardMaterial color="#0c0804" />
-              <arrayAttribute name="instanceMatrix" data={
-                Array.from({ length: 20 }).flatMap((_, i) => {
-                  const angle = (i / 20) * Math.PI * 2;
-                  const r = 8 + Math.random() * 3;
-                  return new THREE.Matrix4().makeTranslation(Math.cos(angle) * r, 0.5, 6 + Math.sin(angle) * r).elements;
-                })
-              } />
+              <bufferAttribute
+                attach="instanceMatrix"
+                array={new Float32Array(spectatorMatrices)}
+                itemSize={16}
+              />
             </instancedMesh>
 
             <fog attach="fog" args={["#080604", 6, 35]} />
@@ -364,26 +414,22 @@ export function HHolmesVideo({ width, height }: { width: number; height: number 
             <instancedMesh args={[null, null, 3]}>
               <cylinderGeometry args={[3, 2.5, 20, 6]} />
               <meshStandardMaterial color="#100a05" />
-              <arrayAttribute name="instanceMatrix" data={[
-                new THREE.Matrix4().makeTranslation(-11, 15, 0).elements,
-                new THREE.Matrix4().makeTranslation(11, 15, 0).elements,
-                new THREE.Matrix4().makeTranslation(0, 17, 0).elements,
-              ]} />
+              <bufferAttribute
+                attach="instanceMatrix"
+                array={new Float32Array(towerMatrices)}
+                itemSize={16}
+              />
             </instancedMesh>
 
             {/* Chicago skyline emerging - instanced boxes */}
             <instancedMesh args={[null, null, 12]}>
               <boxGeometry args={[2.5, 1, 2.5]} />
               <meshStandardMaterial color="#080a12" roughness={0.9} />
-              <arrayAttribute name="instanceMatrix" data={
-                Array.from({ length: 12 }).flatMap((_, i) => {
-                  return new THREE.Matrix4().makeTranslation(
-                    i * 4 - 24,
-                    2 + Math.random() * 8,
-                    -25
-                  ).elements;
-                })
-              } />
+              <bufferAttribute
+                attach="instanceMatrix"
+                array={new Float32Array(chicagoMatrices)}
+                itemSize={16}
+              />
             </instancedMesh>
 
             <fog attach="fog" args={["#020203", 15, 80]} />
@@ -775,7 +821,6 @@ export const HHolmesVideoComposition: React.FC = () => {
       fps={30}
       width={1080}
       height={1920}
-      defaultProps={{ width: 1080, height: 1920 }}
     />
   );
 };
@@ -789,7 +834,6 @@ export const HHolmesVideoPreview: React.FC = () => {
       fps={30}
       width={480}
       height={854}
-      defaultProps={{ width: 480, height: 854 }}
     />
   );
 };

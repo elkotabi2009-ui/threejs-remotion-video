@@ -28,7 +28,7 @@
       "@store/*": ["src/store/*"],
       "@types/*": ["src/types/*"]
     },
-    "types": ["vite/client", "remotion"]
+    "types": ["vite/client", "remotion", "@react-three/fiber"]
   },
   "include": ["src/**/*", "scripts/**/*", "blender/**/*"],
   "exclude": ["node_modules", "dist", "out", ".remotion", "src/automation/**/*", "src/scenes/generated/**/*", "src/compositions/generated/**/*"]

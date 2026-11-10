@@ -1,11 +1,12 @@
-import { Composition, AbsoluteFill, useVideoConfig } from "remotion";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Composition, AbsoluteFill, useVideoConfig, useCurrentFrame } from "remotion";
+import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
 import { OrbitControls, Html, ContactShadows, Environment } from "@react-three/drei";
 import { useRemotionTiming, useInterpolate } from "@/hooks/useRemotion";
 
 export function TestVideo({ width, height }: { width: number; height: number }) {
-  const { frame, fps, durationInFrames } = useVideoConfig();
+  const frame = useCurrentFrame();
+  const { fps, durationInFrames } = useVideoConfig();
   const { progress } = useRemotionTiming();
 
   const rotation = useInterpolate(

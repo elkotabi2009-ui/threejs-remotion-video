@@ -42,26 +42,64 @@ declare module "three" {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
+      // Objects
       group: React.ThreeIntrinsicElement<THREE.Group>;
       mesh: React.ThreeIntrinsicElement<THREE.Mesh>;
       primitive: React.ThreeIntrinsicElement<THREE.Object3D>;
+      points: React.ThreeIntrinsicElement<THREE.Points>;
+      instancedMesh: React.ThreeIntrinsicElement<THREE.InstancedMesh>;
+      skinnedMesh: React.ThreeIntrinsicElement<THREE.SkinnedMesh>;
+      line: React.ThreeIntrinsicElement<THREE.Line>;
+      lineSegments: React.ThreeIntrinsicElement<THREE.LineSegments>;
+      sprite: React.ThreeIntrinsicElement<THREE.Sprite>;
+      bone: React.ThreeIntrinsicElement<THREE.Bone>;
+      lOD: React.ThreeIntrinsicElement<THREE.LOD>;
+      // Lights
       directionalLight: React.ThreeIntrinsicElement<THREE.DirectionalLight>;
       directionalLightShadow: React.ThreeIntrinsicElement<THREE.DirectionalLightShadow>;
+      pointLightShadow: React.ThreeIntrinsicElement<THREE.PointLightShadow>;
+      spotLightShadow: React.ThreeIntrinsicElement<THREE.SpotLightShadow>;
       ambientLight: React.ThreeIntrinsicElement<THREE.AmbientLight>;
       pointLight: React.ThreeIntrinsicElement<THREE.PointLight>;
       spotLight: React.ThreeIntrinsicElement<THREE.SpotLight>;
       hemisphereLight: React.ThreeIntrinsicElement<THREE.HemisphereLight>;
       rectAreaLight: React.ThreeIntrinsicElement<THREE.RectAreaLight>;
-      pointLightShadow: React.ThreeIntrinsicElement<THREE.PointLightShadow>;
-      spotLightShadow: React.ThreeIntrinsicElement<THREE.SpotLightShadow>;
+      // Cameras
       perspectiveCamera: React.ThreeIntrinsicElement<THREE.PerspectiveCamera>;
       orthographicCamera: React.ThreeIntrinsicElement<THREE.OrthographicCamera>;
       camera: React.ThreeIntrinsicElement<THREE.Camera>;
+      // Scene & Environment
       scene: React.ThreeIntrinsicElement<THREE.Scene>;
       fog: React.ThreeIntrinsicElement<THREE.Fog>;
       fogExp2: React.ThreeIntrinsicElement<THREE.FogExp2>;
+      // Geometries (as JSX elements via react-three-fiber)
+      boxGeometry: React.ThreeIntrinsicElement<THREE.BoxGeometry>;
+      cylinderGeometry: React.ThreeIntrinsicElement<THREE.CylinderGeometry>;
+      coneGeometry: React.ThreeIntrinsicElement<THREE.ConeGeometry>;
+      planeGeometry: React.ThreeIntrinsicElement<THREE.PlaneGeometry>;
+      sphereGeometry: React.ThreeIntrinsicElement<THREE.SphereGeometry>;
+      torusGeometry: React.ThreeIntrinsicElement<THREE.TorusGeometry>;
+      torusKnotGeometry: React.ThreeIntrinsicElement<THREE.TorusKnotGeometry>;
+      ringGeometry: React.ThreeIntrinsicElement<THREE.RingGeometry>;
+      circleGeometry: React.ThreeIntrinsicElement<THREE.CircleGeometry>;
+      shapeGeometry: React.ThreeIntrinsicElement<THREE.ShapeGeometry>;
+      extrudeGeometry: React.ThreeIntrinsicElement<THREE.ExtrudeGeometry>;
+      latheGeometry: React.ThreeIntrinsicElement<THREE.LatheGeometry>;
+      textGeometry: React.ThreeIntrinsicElement<THREE.TextGeometry>;
+      edgesGeometry: React.ThreeIntrinsicElement<THREE.EdgesGeometry>;
+      wireframeGeometry: React.ThreeIntrinsicElement<THREE.WireframeGeometry>;
+      tetrahedronGeometry: React.ThreeIntrinsicElement<THREE.TetrahedronGeometry>;
+      octahedronGeometry: React.ThreeIntrinsicElement<THREE.OctahedronGeometry>;
+      icosahedronGeometry: React.ThreeIntrinsicElement<THREE.IcosahedronGeometry>;
+      dodecahedronGeometry: React.ThreeIntrinsicElement<THREE.DodecahedronGeometry>;
+      tubeGeometry: React.ThreeIntrinsicElement<THREE.TubeGeometry>;
+      capsuleGeometry: React.ThreeIntrinsicElement<THREE.CapsuleGeometry>;
       bufferGeometry: React.ThreeIntrinsicElement<THREE.BufferGeometry>;
       geometry: React.ThreeIntrinsicElement<THREE.Geometry>;
+      // Attributes
+      bufferAttribute: React.ThreeIntrinsicElement<THREE.BufferAttribute>;
+      interleavedBufferAttribute: React.ThreeIntrinsicElement<THREE.InterleavedBufferAttribute>;
+      // Materials
       material: React.ThreeIntrinsicElement<THREE.Material>;
       meshBasicMaterial: React.ThreeIntrinsicElement<THREE.MeshBasicMaterial>;
       meshStandardMaterial: React.ThreeIntrinsicElement<THREE.MeshStandardMaterial>;
@@ -79,6 +117,7 @@ declare global {
       spriteMaterial: React.ThreeIntrinsicElement<THREE.SpriteMaterial>;
       rawShaderMaterial: React.ThreeIntrinsicElement<THREE.RawShaderMaterial>;
       shaderMaterial: React.ThreeIntrinsicElement<THREE.ShaderMaterial>;
+      // Textures
       texture: React.ThreeIntrinsicElement<THREE.Texture>;
       canvasTexture: React.ThreeIntrinsicElement<THREE.CanvasTexture>;
       videoTexture: React.ThreeIntrinsicElement<THREE.VideoTexture>;
