@@ -1,0 +1,95 @@
+{
+  "id": "3bd7727b-4a49-458e-92c1-117b24119cd8",
+  "title": "Paradosso: questa pipeline genera video virali senza AI slop - 6 moduli, fact-ch",
+  "durationSeconds": 15,
+  "durationFrames": 450,
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "aspectRatio": "9:16",
+  "targetPlatform": "tiktok",
+  "scenes": [],
+  "audio": {
+    "sfx": [],
+    "beatSync": false,
+    "masterVolume": 1
+  },
+  "globalStyle": {
+    "colorPalette": {
+      "primary": [
+        {
+          "r": 0.1,
+          "g": 0.1,
+          "b": 0.2
+        },
+        {
+          "r": 0.9,
+          "g": 0.3,
+          "b": 0.4
+        },
+        {
+          "r": 1,
+          "g": 1,
+          "b": 1
+        }
+      ],
+      "secondary": [],
+      "accent": [
+        {
+          "r": 0.1,
+          "g": 0.5,
+          "b": 0.9
+        }
+      ],
+      "background": {
+        "r": 0.02,
+        "g": 0.02,
+        "b": 0.05
+      },
+      "mode": "dark"
+    },
+    "lighting": "cinematic",
+    "cameraStyle": "dolly",
+    "postProcessing": {
+      "bloom": {
+        "enabled": true,
+        "strength": 0.5,
+        "radius": 0.5,
+        "threshold": 0.8
+      },
+      "depthOfField": {
+        "enabled": true,
+        "focusDistance": 10,
+        "aperture": 2.8,
+        "maxBlur": 1
+      },
+      "motionBlur": {
+        "enabled": true,
+        "strength": 0.5
+      },
+      "colorGrading": {
+        "enabled": true,
+        "exposure": 0,
+        "contrast": 1.1,
+        "saturation": 1.1,
+        "temperature": 0,
+        "tint": 0
+      },
+      "vignette": {
+        "enabled": true,
+        "darkness": 0.3,
+        "offset": 0
+      },
+      "filmGrain": {
+        "enabled": true,
+        "strength": 0.03
+      },
+      "chromaticAberration": {
+        "enabled": false,
+        "offset": 0.002
+      }
+    }
+  },
+  "assets": [],
+  "generatedAt": "2026-11-08T19:09:29.751Z"
+}

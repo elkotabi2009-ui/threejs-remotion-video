@@ -107,13 +107,14 @@ jobs:
             libxdamage1 libxrandr2 libgbm1 libxss1 libasound2 \
             libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 \
             libexpat1 libfontconfig1 libgcc1 libglib2.0-0 libgtk-3-0 \
-            libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 \
-            libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 \
-            libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 \
-            libxss1 libxtst6 ca-certificates fonts-liberation \
+            libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 \
+            libx11-6 libx11-xcb1 libxcb1 libxcursor1 \
+            libxext6 libxfixes3 libxi6 libxrender1 \
+            libxtst6 ca-certificates fonts-liberation \
             libappindicator3-1 lsb-release xdg-utils wget \
-            chromium-browser 2>&1 | tail -20
+            chromium 2>&1 | tail -20
           echo "=== CHROMIUM DEPS + XVFB DONE ==="
+          which chromium || which chromium-browser || echo "Chromium not found in PATH"
 
       - name: TypeScript compile check (non-blocking)
         run: |
@@ -154,13 +155,13 @@ jobs:
           echo "Start: $(date)"
 
           # Set render params based on composition
-          if [[ "$COMPOSITION" == "verification-video" ]] || [[ "$COMPOSITION" == "verification-video-square" ]] || [[ "$COMPOSITION" == "verification-video-landscape" ]]; then
+          if [[ "$COMPOSITION" =~ ^verification-video ]]; then
             CONCURRENCY=4
             QUALITY=80
-          elif [[ "$COMPOSITION" == "test-video" ]] || [[ "$COMPOSITION" == "test-video-square" ]] || [[ "$COMPOSITION" == "test-video-landscape" ]]; then
+          elif [[ "$COMPOSITION" =~ ^test-video ]]; then
             CONCURRENCY=2
             QUALITY=70
-          elif [[ "$COMPOSITION" == "hholmes-video" ]] || [[ "$COMPOSITION" == "hholmes-preview" ]]; then
+          elif [[ "$COMPOSITION" =~ ^hholmes ]]; then
             CONCURRENCY=1
             QUALITY=60
           else
@@ -171,6 +172,14 @@ jobs:
           echo "Concurrency: $CONCURRENCY, Quality: $QUALITY"
           echo "Free memory: $(free -h | grep Mem | awk '{print $7}')"
 
+          # Find chromium executable
+          CHROMIUM_PATH=$(which chromium || which chromium-browser || echo "")
+          if [ -z "$CHROMIUM_PATH" ]; then
+            echo "ERROR: Chromium not found!"
+            exit 1
+          fi
+          echo "Using Chromium: $CHROMIUM_PATH"
+
           # Render with Xvfb + GPU flags + explicit error capture
           xvfb-run -a -s "-screen 0 1920x1080x24" \
             npx remotion render src/Root.tsx $COMPOSITION out/video.mp4 \
@@ -179,6 +188,7 @@ jobs:
               --timeout=300000 \
               --log-level=verbose \
               --chromium-options="--enable-gpu --use-gl=angle --use-angle=swiftshader --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu-sandbox" \
+              --executable-path="$CHROMIUM_PATH" \
               2>&1 | tee render.log
           RENDER_EXIT=${PIPESTATUS[0]}
           echo "End: $(date)"

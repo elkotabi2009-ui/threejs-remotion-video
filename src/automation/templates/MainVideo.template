@@ -1,0 +1,108 @@
+import { Composition, AbsoluteFill, useVideoConfig, OffthreadVideo } from "remotion";
+import { Scene3D } from "@/scenes/Scene3D";
+import { AudioVisualizer } from "@/components/AudioVisualizer";
+import { CaptionOverlay } from "@/components/CaptionOverlay";
+import { Timeline } from "@/timeline/Timeline";
+import { useTimelineStore } from "@/store/timelineStore";
+import { useAudioStore } from "@/store/audioStore";
+import { useRemotionTiming, useTimeRange } from "@/hooks/useRemotion";
+import { useMemo } from "react";
+
+export const MainVideo: React.FC = () => {
+  const { width, height, fps, durationInFrames } = useVideoConfig();
+  const { frame, time } = useRemotionTiming();
+  const { tracks, inPoint, outPoint } = useTimelineStore();
+  const { tracks: audioTracks, masterVolume } = useAudioStore();
+
+  const videoTracks = useMemo(() => tracks.filter(t => t.type === "video"), [tracks]);
+  const threeTracks = useMemo(() => tracks.filter(t => t.type === "3d"), [tracks]);
+  const textTracks = useMemo(() => tracks.filter(t => t.type === "text"), [tracks]);
+
+  return (
+    <AbsoluteFill style={{ background: "{{backgroundColor}}" }}>
+      {{#threeTracks}}
+      {threeTracks.map((track) => (
+        <OffthreadVideo key={track.id} src="three-scene" durationInFrames={durationInFrames}>
+          <Scene3D
+            width={width}
+            height={height}
+            onFrame={(frame, delta) => {
+              console.log(`3D Track ${track.id}: frame ${frame}`);
+            }}
+          />
+        </OffthreadVideo>
+      ))}
+      {{/threeTracks}}
+
+      {{#videoTracks}}
+      {videoTracks.map((track) => (
+        <TimeRangeTrack key={track.id} track={track} />
+      ))}
+      {{/videoTracks}}
+
+      {{#textTracks}}
+      {textTracks.map((track) => (
+        <CaptionOverlay
+          key={track.id}
+          track={track}
+          width={width}
+          height={height}
+        />
+      ))}
+      {{/textTracks}}
+
+      {{#includeAudio}}
+      <AudioVisualizer
+        tracks={audioTracks}
+        width={width}
+        height={200}
+        position="bottom"
+      />
+      {{/includeAudio}}
+
+      {{#includeTimeline}}
+      <Timeline
+        width={width}
+        height={100}
+        position="bottom"
+      />
+      {{/includeTimeline}}
+    </AbsoluteFill>
+  );
+};
+
+function TimeRangeTrack({ track }: { track: any }) {
+  const { frame } = useRemotionTiming();
+  const { active, progress } = useTimeRange(track.keyframes[0]?.frame || 0, track.keyframes[track.keyframes.length - 1]?.frame || 0);
+
+  if (!active) return null;
+
+  return (
+    <AbsoluteFill
+      style={{
+        opacity: 1,
+        mixBlendMode: track.blendMode,
+      }}
+    >
+      {track.content}
+    </AbsoluteFill>
+  );
+}
+
+export const RemotionComposition: React.FC = () => {
+  return (
+    <Composition
+      id="{{compositionId}}"
+      component={MainVideo}
+      durationInFrames={{durationFrames}}
+      fps={{fps}}
+      width={{width}}
+      height={{height}}
+      defaultProps={{}}
+    />
+  );
+};
+
+{{#extraCompositions}}
+{{extraCompositions}}
+{{/extraCompositions}}

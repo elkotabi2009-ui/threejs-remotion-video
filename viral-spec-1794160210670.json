@@ -1,0 +1,257 @@
+{
+  "id": "ae97d744-7ef0-49b8-b44c-39e11e76d7db",
+  "title": "Paradosso: il regno animale ha creature che non invecchiano mai - la medusa Turr",
+  "platform": "tiktok",
+  "style": "photorealistic",
+  "durationSeconds": 15,
+  "durationFrames": 450,
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "aspectRatio": "9:16",
+  "script": {
+    "style": "photorealistic",
+    "platform": "tiktok",
+    "hook": {
+      "formula": "paradox",
+      "frame": 0
+    },
+    "speechRate": 2.77,
+    "phases": [
+      {
+        "name": "hook",
+        "startFrame": 0,
+        "endFrame": 30,
+        "durationFrames": 30,
+        "content": "Paradosso: il regno animale ha creature che non invecchiano mai - la medusa Turritopsis dohrnii è biologicamente immortale, può riavvolgere il proprio ciclo vitale all'infinito"
+      },
+      {
+        "name": "setup",
+        "startFrame": 30,
+        "endFrame": 90,
+        "durationFrames": 60,
+        "content": "Setup della scena e contesto"
+      },
+      {
+        "name": "development",
+        "startFrame": 90,
+        "endFrame": 300,
+        "durationFrames": 210,
+        "content": "Sviluppo progressivo dei dati e narrazione"
+      },
+      {
+        "name": "pivot",
+        "startFrame": 150,
+        "endFrame": 300,
+        "durationFrames": 150,
+        "content": "Il pivot - cambio di prospettiva"
+      },
+      {
+        "name": "payoff",
+        "startFrame": 300,
+        "endFrame": 450,
+        "durationFrames": 150,
+        "content": "Payoff finale con twist"
+      }
+    ],
+    "totalDurationFrames": 450,
+    "totalDurationSeconds": 15
+  },
+  "camera": {
+    "lens": {
+      "focalLength": 28,
+      "aperture": 2,
+      "sensorSize": "full-frame",
+      "anamorphic": false,
+      "anamorphicSqueeze": 1.33
+    },
+    "keyframes": [
+      {
+        "frame": 0,
+        "position": {
+          "x": 0,
+          "y": 2,
+          "z": 5
+        },
+        "target": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "fov": 50,
+        "easeIn": 0.5,
+        "easeOut": 0.5
+      },
+      {
+        "frame": 450,
+        "position": {
+          "x": 3,
+          "y": 1.5,
+          "z": 3
+        },
+        "target": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "fov": 35,
+        "easeIn": 0.5,
+        "easeOut": 0.5
+      }
+    ],
+    "transitions": [],
+    "defaultPostProcessing": {
+      "lensBlur": {
+        "enabled": true,
+        "intensity": 0.15,
+        "bokehQuality": "high"
+      },
+      "highlightControl": {
+        "enabled": true,
+        "preventPureWhite": true,
+        "rolloffCurve": "film"
+      },
+      "vignette": {
+        "enabled": true,
+        "intensity": 0.1,
+        "color": "warm"
+      },
+      "filmGrain": {
+        "enabled": true,
+        "intensity": 0.03,
+        "animated": true
+      },
+      "motionBlur": {
+        "enabled": true,
+        "shutterAngle": 180,
+        "samples": 16,
+        "calibratedPerMovement": true
+      },
+      "colorGrading": {
+        "shadows": {
+          "neverPureBlack": true,
+          "tintWarm": "#1a1510",
+          "tintCool": "#0a0f1a",
+          "tintPurple": "#1a0a15"
+        },
+        "highlights": {
+          "protected": true,
+          "rolloff": 0.85
+        }
+      }
+    },
+    "constraints": {
+      "maxCutsPerSecond": 0.14,
+      "preferTransitions": true,
+      "transitions": {
+        "whipPan": {
+          "weight": 0.3,
+          "minFrames": 20,
+          "maxFrames": 23
+        },
+        "zoomThrough": {
+          "weight": 0.25,
+          "minFrames": 20,
+          "maxFrames": 23
+        },
+        "slowDolly": {
+          "weight": 0.35,
+          "minFrames": 20,
+          "maxFrames": 23,
+          "ease": "slow-in-slow-out"
+        },
+        "static": {
+          "weight": 0.1
+        }
+      },
+      "maxJerk": 0.5,
+      "preferLinearDolly": true,
+      "avoidLateralRotation": true,
+      "avoidChaoticOrbits": true
+    }
+  },
+  "assets": {
+    "acquisition": {
+      "preferRealWorld": true,
+      "downloadAndImport": true,
+      "fallbackToProcedural": true
+    },
+    "realWorldAssets": [],
+    "characters": [],
+    "proceduralGenerators": [],
+    "blenderJobs": [],
+    "blenderHeadless": {
+      "parallelInstances": 2,
+      "gpuAcceleration": true
+    },
+    "renderOptimization": {}
+  },
+  "audio": {
+    "master": {
+      "targetLUFS": -14,
+      "truePeakMax": -1,
+      "limiterCeiling": -1,
+      "dither": true
+    },
+    "referenceLevels": {
+      "musicBed": -24,
+      "ambientBed": -30,
+      "narrator": -18,
+      "punctualSFX": -12,
+      "foley": -18,
+      "riserImpact": -6
+    },
+    "narrator": {
+      "targetLUFS": -15,
+      "compressionRatio": 8,
+      "fastAttack": 0.003,
+      "mediumRelease": 0.1,
+      "maxGainReduction": 12,
+      "highPassHz": 80,
+      "deEsser": true
+    },
+    "sync": {
+      "rule": "peaks-aligned-to-visual-changes"
+    },
+    "tracks": [],
+    "proceduralGenerators": {
+      "ambientDrones": true,
+      "proceduralBeats": true,
+      "syntheticSFX": true,
+      "voiceoverTTS": false
+    }
+  },
+  "render": {
+    "targetPlatform": "tiktok",
+    "encoding": {
+      "codec": "h264",
+      "bitrate": 16,
+      "profile": "high",
+      "level": "5.1"
+    },
+    "output": {
+      "container": "mp4",
+      "audioCodec": "aac",
+      "audioBitrate": 128
+    },
+    "optimization": {
+      "maxRenderTimeMinutes": 60,
+      "parallelJobs": 4,
+      "qualityVsSpeed": "balanced"
+    }
+  },
+  "qualityGates": {
+    "frameByFrameCheck": true,
+    "checkLighting": true,
+    "checkInkLines": false,
+    "checkClipping": true,
+    "checkContrast": true,
+    "checkAudioSync": true,
+    "checkLUFS": true
+  },
+  "metadata": {
+    "createdAt": "2026-11-08T17:50:10.669Z",
+    "version": "1.0",
+    "viralShortConfigVersion": "1.0"
+  }
+}

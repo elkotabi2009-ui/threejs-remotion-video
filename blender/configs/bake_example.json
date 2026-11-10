@@ -1,0 +1,11 @@
+{
+  "inputBlend": "assets/source/scene.blend",
+  "outputBlend": "assets/source/scene_baked.blend",
+  "frameStart": 1,
+  "frameEnd": 250,
+  "step": 1,
+  "bakeSettings": {
+    "clearConstraints": false,
+    "clearParents": false
+  }
+}

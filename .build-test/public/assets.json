@@ -1,0 +1,382 @@
+{
+  "id": "1fec9a53-c01a-4165-af38-c5c728579e18",
+  "title": "15s TikTok: spinning neon cube with particles, electric blue glow",
+  "durationSeconds": 15,
+  "durationFrames": 450,
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "aspectRatio": "9:16",
+  "targetPlatform": "tiktok",
+  "scenes": [
+    {
+      "id": "scene-mw8cbm6s-jhz6y3d",
+      "name": "Scene 1",
+      "type": "3d",
+      "startFrame": 0,
+      "endFrame": 450,
+      "durationFrames": 450,
+      "assets": [
+        {
+          "id": "asset-mw8cbm6s-h1pq88f-model",
+          "type": "model",
+          "src": "./assets/models/default.glb",
+          "name": "Main 3D Model",
+          "sceneId": "scene-mw8cbm6s-jhz6y3d",
+          "required": true
+        }
+      ],
+      "animations": [
+        {
+          "id": "anim-mw8cbm6t-v536pof-rotation",
+          "type": "rotation",
+          "target": "main",
+          "property": "rotation.y",
+          "from": 0,
+          "to": 6.283185307179586,
+          "durationFrames": 450,
+          "delayFrames": 0,
+          "easing": "linear",
+          "loop": true,
+          "yoyo": false
+        }
+      ],
+      "transitions": [],
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 2,
+          "z": 5
+        },
+        "target": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "fov": 50,
+        "near": 0.1,
+        "far": 1000
+      },
+      "lighting": {
+        "ambient": {
+          "r": 0.3,
+          "g": 0.3,
+          "b": 0.35
+        },
+        "directional": [
+          {
+            "color": {
+              "r": 1,
+              "g": 0.95,
+              "b": 0.9
+            },
+            "intensity": 1,
+            "position": {
+              "x": 5,
+              "y": 10,
+              "z": 7
+            }
+          },
+          {
+            "color": {
+              "r": 0.5,
+              "g": 0.7,
+              "b": 1
+            },
+            "intensity": 0.5,
+            "position": {
+              "x": -5,
+              "y": 5,
+              "z": -5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene-mw8cbm6t-bz9dcj0",
+      "name": "Scene 2",
+      "type": "3d",
+      "startFrame": 450,
+      "endFrame": 450,
+      "durationFrames": 0,
+      "assets": [
+        {
+          "id": "asset-mw8cbm6t-kt2yoky-model",
+          "type": "model",
+          "src": "./assets/models/default.glb",
+          "name": "Main 3D Model",
+          "sceneId": "scene-mw8cbm6t-bz9dcj0",
+          "required": true
+        }
+      ],
+      "animations": [
+        {
+          "id": "anim-mw8cbm6t-q6z6h13-rotation",
+          "type": "rotation",
+          "target": "main",
+          "property": "rotation.y",
+          "from": 0,
+          "to": 6.283185307179586,
+          "durationFrames": 30,
+          "delayFrames": 0,
+          "easing": "easeInOut",
+          "loop": true,
+          "yoyo": false
+        },
+        {
+          "id": "anim-mw8cbm6t-q6z6h13-particle",
+          "type": "particle",
+          "target": "main",
+          "property": "particle",
+          "from": 0,
+          "to": 1,
+          "durationFrames": 30,
+          "delayFrames": 0,
+          "easing": "easeInOut",
+          "loop": true,
+          "yoyo": false
+        }
+      ],
+      "transitions": [
+        {
+          "id": "trans-mw8cbm6t-zs94htz-fade",
+          "type": "fade",
+          "durationFrames": 15,
+          "easing": "easeInOut",
+          "direction": "both"
+        }
+      ],
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 2,
+          "z": 5
+        },
+        "target": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "fov": 50,
+        "near": 0.1,
+        "far": 1000
+      },
+      "lighting": {
+        "ambient": {
+          "r": 0.3,
+          "g": 0.3,
+          "b": 0.35
+        },
+        "directional": [
+          {
+            "color": {
+              "r": 1,
+              "g": 0.95,
+              "b": 0.9
+            },
+            "intensity": 1,
+            "position": {
+              "x": 5,
+              "y": 10,
+              "z": 7
+            }
+          },
+          {
+            "color": {
+              "r": 0.5,
+              "g": 0.7,
+              "b": 1
+            },
+            "intensity": 0.5,
+            "position": {
+              "x": -5,
+              "y": 5,
+              "z": -5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene-mw8cbm6t-rmkp3jc",
+      "name": "Scene 3",
+      "type": "3d",
+      "startFrame": 480,
+      "endFrame": 450,
+      "durationFrames": -30,
+      "assets": [
+        {
+          "id": "asset-mw8cbm6t-vx5449w-model",
+          "type": "model",
+          "src": "./assets/models/default.glb",
+          "name": "Main 3D Model",
+          "sceneId": "scene-mw8cbm6t-rmkp3jc",
+          "required": true
+        }
+      ],
+      "animations": [
+        {
+          "id": "anim-mw8cbm6t-2ybl8cw-rotation",
+          "type": "rotation",
+          "target": "main",
+          "property": "rotation.y",
+          "from": 0,
+          "to": 6.283185307179586,
+          "durationFrames": 30,
+          "delayFrames": 0,
+          "easing": "linear",
+          "loop": true,
+          "yoyo": false
+        }
+      ],
+      "transitions": [
+        {
+          "id": "trans-mw8cbm6t-1v63g0h-fade",
+          "type": "fade",
+          "durationFrames": 15,
+          "easing": "easeInOut",
+          "direction": "both"
+        }
+      ],
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 2,
+          "z": 5
+        },
+        "target": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "fov": 50,
+        "near": 0.1,
+        "far": 1000
+      },
+      "lighting": {
+        "ambient": {
+          "r": 0.3,
+          "g": 0.3,
+          "b": 0.35
+        },
+        "directional": [
+          {
+            "color": {
+              "r": 1,
+              "g": 0.95,
+              "b": 0.9
+            },
+            "intensity": 1,
+            "position": {
+              "x": 5,
+              "y": 10,
+              "z": 7
+            }
+          },
+          {
+            "color": {
+              "r": 0.5,
+              "g": 0.7,
+              "b": 1
+            },
+            "intensity": 0.5,
+            "position": {
+              "x": -5,
+              "y": 5,
+              "z": -5
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "audio": {
+    "backgroundMusic": {
+      "src": "./assets/audio/ambient-default.mp3",
+      "volume": 0.4,
+      "loop": true,
+      "fadeInFrames": 60,
+      "fadeOutFrames": 60,
+      "startFrame": 0
+    },
+    "sfx": [],
+    "beatSync": false,
+    "masterVolume": 1
+  },
+  "globalStyle": {
+    "colorPalette": {
+      "primary": [
+        {
+          "r": 0.20392156862745098,
+          "g": 0.596078431372549,
+          "b": 0.8588235294117647
+        }
+      ],
+      "secondary": [],
+      "accent": [
+        {
+          "r": 0.20392156862745098,
+          "g": 0.596078431372549,
+          "b": 0.8588235294117647
+        }
+      ],
+      "background": {
+        "r": 0.10196078431372549,
+        "g": 0.10196078431372549,
+        "b": 0.1803921568627451
+      },
+      "mode": "dark"
+    },
+    "lighting": "neon",
+    "cameraStyle": "static",
+    "postProcessing": {
+      "bloom": {
+        "enabled": false,
+        "strength": 0.5,
+        "radius": 0.5,
+        "threshold": 0.8
+      },
+      "colorGrading": {
+        "enabled": true,
+        "exposure": 0,
+        "contrast": 1.1,
+        "saturation": 1.1,
+        "temperature": 0,
+        "tint": 0
+      },
+      "vignette": {
+        "enabled": false,
+        "darkness": 0.3,
+        "offset": 0
+      }
+    }
+  },
+  "assets": [
+    {
+      "id": "asset-mw8cbm6s-h1pq88f-model",
+      "type": "model",
+      "src": "./assets/models/default.glb",
+      "name": "Main 3D Model",
+      "sceneId": "scene-mw8cbm6s-jhz6y3d",
+      "required": true
+    },
+    {
+      "id": "asset-mw8cbm6t-kt2yoky-model",
+      "type": "model",
+      "src": "./assets/models/default.glb",
+      "name": "Main 3D Model",
+      "sceneId": "scene-mw8cbm6t-bz9dcj0",
+      "required": true
+    },
+    {
+      "id": "asset-mw8cbm6t-vx5449w-model",
+      "type": "model",
+      "src": "./assets/models/default.glb",
+      "name": "Main 3D Model",
+      "sceneId": "scene-mw8cbm6t-rmkp3jc",
+      "required": true
+    }
+  ],
+  "generatedAt": "2026-11-08T21:24:31.704Z"
+}

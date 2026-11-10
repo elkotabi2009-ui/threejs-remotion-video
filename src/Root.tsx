@@ -45,4 +45,4 @@ const Root = () => {
 
 registerRoot(Root);
 
-export { TestVideoComposition, TestVideoSquare, TestVideoLandscape, HHolmesVideoComposition, HHolmesVideoPreview };
+export { TestVideoComposition, TestVideoSquare, TestVideoLandscape, HHolmesVideoComposition, HHolmesVideoPreview, VerificationVideoComposition, VerificationVideoSquare, VerificationVideoLandscape };

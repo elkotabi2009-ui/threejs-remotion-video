@@ -1,0 +1,564 @@
+{
+  "id": "48e9cbb2-9c7b-4157-8e19-ab4d3f420e82",
+  "title": "10s YouTube intro: spinning 3D logo, particle burst, epic orchestral hit, title reveal",
+  "durationSeconds": 10,
+  "durationFrames": 300,
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "aspectRatio": "16:9",
+  "targetPlatform": "youtube",
+  "scenes": [
+    {
+      "id": "scene-mw81unej-7x9zviw",
+      "name": "Scene 1",
+      "type": "3d",
+      "startFrame": 0,
+      "endFrame": 300,
+      "durationFrames": 300,
+      "assets": [
+        {
+          "id": "asset-mw81unej-xh6jmpi-model",
+          "type": "model",
+          "src": "./assets/models/default.glb",
+          "name": "Main 3D Model",
+          "sceneId": "scene-mw81unej-7x9zviw",
+          "required": true
+        }
+      ],
+      "animations": [
+        {
+          "id": "anim-mw81unej-54veinq-rotation",
+          "type": "rotation",
+          "target": "main",
+          "property": "rotation.y",
+          "from": 0,
+          "to": 6.283185307179586,
+          "durationFrames": 300,
+          "delayFrames": 0,
+          "easing": "linear",
+          "loop": true,
+          "yoyo": false
+        }
+      ],
+      "transitions": [],
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 2,
+          "z": 5
+        },
+        "target": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "fov": 50,
+        "near": 0.1,
+        "far": 1000
+      },
+      "lighting": {
+        "ambient": {
+          "r": 0.3,
+          "g": 0.3,
+          "b": 0.35
+        },
+        "directional": [
+          {
+            "color": {
+              "r": 1,
+              "g": 0.95,
+              "b": 0.9
+            },
+            "intensity": 1,
+            "position": {
+              "x": 5,
+              "y": 10,
+              "z": 7
+            }
+          },
+          {
+            "color": {
+              "r": 0.5,
+              "g": 0.7,
+              "b": 1
+            },
+            "intensity": 0.5,
+            "position": {
+              "x": -5,
+              "y": 5,
+              "z": -5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene-mw81unek-74z00p7",
+      "name": "Scene 2",
+      "type": "3d",
+      "startFrame": 300,
+      "endFrame": 300,
+      "durationFrames": 0,
+      "assets": [
+        {
+          "id": "asset-mw81unek-e6rpq24-model",
+          "type": "model",
+          "src": "./assets/models/default.glb",
+          "name": "Main 3D Model",
+          "sceneId": "scene-mw81unek-74z00p7",
+          "required": true
+        }
+      ],
+      "animations": [
+        {
+          "id": "anim-mw81unek-ielip92-rotation",
+          "type": "rotation",
+          "target": "main",
+          "property": "rotation.y",
+          "from": 0,
+          "to": 6.283185307179586,
+          "durationFrames": 30,
+          "delayFrames": 0,
+          "easing": "easeInOut",
+          "loop": true,
+          "yoyo": false
+        }
+      ],
+      "transitions": [
+        {
+          "id": "trans-mw81unek-fnrw7vl-fade",
+          "type": "fade",
+          "durationFrames": 15,
+          "easing": "easeInOut",
+          "direction": "both"
+        }
+      ],
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 2,
+          "z": 5
+        },
+        "target": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "fov": 50,
+        "near": 0.1,
+        "far": 1000
+      },
+      "lighting": {
+        "ambient": {
+          "r": 0.3,
+          "g": 0.3,
+          "b": 0.35
+        },
+        "directional": [
+          {
+            "color": {
+              "r": 1,
+              "g": 0.95,
+              "b": 0.9
+            },
+            "intensity": 1,
+            "position": {
+              "x": 5,
+              "y": 10,
+              "z": 7
+            }
+          },
+          {
+            "color": {
+              "r": 0.5,
+              "g": 0.7,
+              "b": 1
+            },
+            "intensity": 0.5,
+            "position": {
+              "x": -5,
+              "y": 5,
+              "z": -5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene-mw81unek-1hgzl5n",
+      "name": "Scene 3",
+      "type": "3d",
+      "startFrame": 330,
+      "endFrame": 300,
+      "durationFrames": -30,
+      "assets": [
+        {
+          "id": "asset-mw81unek-2ooenc0-model",
+          "type": "model",
+          "src": "./assets/models/default.glb",
+          "name": "Main 3D Model",
+          "sceneId": "scene-mw81unek-1hgzl5n",
+          "required": true
+        },
+        {
+          "id": "asset-mw81unek-2ooenc0-particles",
+          "type": "shader",
+          "src": "./assets/shaders/particles.glsl",
+          "name": "Particle System",
+          "sceneId": "scene-mw81unek-1hgzl5n",
+          "required": true
+        }
+      ],
+      "animations": [
+        {
+          "id": "anim-mw81unek-h3tsnww-particle",
+          "type": "particle",
+          "target": "main",
+          "property": "particle",
+          "from": 0,
+          "to": 1,
+          "durationFrames": 30,
+          "delayFrames": 0,
+          "easing": "easeInOut",
+          "loop": true,
+          "yoyo": false
+        }
+      ],
+      "transitions": [
+        {
+          "id": "trans-mw81unek-n2adlqq-fade",
+          "type": "fade",
+          "durationFrames": 15,
+          "easing": "easeInOut",
+          "direction": "both"
+        }
+      ],
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 2,
+          "z": 5
+        },
+        "target": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "fov": 50,
+        "near": 0.1,
+        "far": 1000
+      },
+      "lighting": {
+        "ambient": {
+          "r": 0.3,
+          "g": 0.3,
+          "b": 0.35
+        },
+        "directional": [
+          {
+            "color": {
+              "r": 1,
+              "g": 0.95,
+              "b": 0.9
+            },
+            "intensity": 1,
+            "position": {
+              "x": 5,
+              "y": 10,
+              "z": 7
+            }
+          },
+          {
+            "color": {
+              "r": 0.5,
+              "g": 0.7,
+              "b": 1
+            },
+            "intensity": 0.5,
+            "position": {
+              "x": -5,
+              "y": 5,
+              "z": -5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene-mw81unek-u3lj7lb",
+      "name": "Scene 4",
+      "type": "3d",
+      "startFrame": 360,
+      "endFrame": 300,
+      "durationFrames": -60,
+      "assets": [
+        {
+          "id": "asset-mw81unek-3i1yv4t-model",
+          "type": "model",
+          "src": "./assets/models/default.glb",
+          "name": "Main 3D Model",
+          "sceneId": "scene-mw81unek-u3lj7lb",
+          "required": true
+        }
+      ],
+      "animations": [
+        {
+          "id": "anim-mw81unek-k7ljqr5-rotation",
+          "type": "rotation",
+          "target": "main",
+          "property": "rotation.y",
+          "from": 0,
+          "to": 6.283185307179586,
+          "durationFrames": 30,
+          "delayFrames": 0,
+          "easing": "linear",
+          "loop": true,
+          "yoyo": false
+        }
+      ],
+      "transitions": [
+        {
+          "id": "trans-mw81unek-o3ktbm7-fade",
+          "type": "fade",
+          "durationFrames": 15,
+          "easing": "easeInOut",
+          "direction": "both"
+        }
+      ],
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 2,
+          "z": 5
+        },
+        "target": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "fov": 50,
+        "near": 0.1,
+        "far": 1000
+      },
+      "lighting": {
+        "ambient": {
+          "r": 0.3,
+          "g": 0.3,
+          "b": 0.35
+        },
+        "directional": [
+          {
+            "color": {
+              "r": 1,
+              "g": 0.95,
+              "b": 0.9
+            },
+            "intensity": 1,
+            "position": {
+              "x": 5,
+              "y": 10,
+              "z": 7
+            }
+          },
+          {
+            "color": {
+              "r": 0.5,
+              "g": 0.7,
+              "b": 1
+            },
+            "intensity": 0.5,
+            "position": {
+              "x": -5,
+              "y": 5,
+              "z": -5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene-mw81unek-oo27rq6",
+      "name": "Scene 5",
+      "type": "text",
+      "startFrame": 390,
+      "endFrame": 300,
+      "durationFrames": -90,
+      "assets": [
+        {
+          "id": "asset-mw81unek-xbhx24w-font",
+          "type": "font",
+          "src": "./assets/fonts/Inter-Bold.ttf",
+          "name": "Title Font",
+          "sceneId": "scene-mw81unek-oo27rq6",
+          "required": true
+        }
+      ],
+      "animations": [
+        {
+          "id": "anim-mw81unek-vpynzqq-fade",
+          "type": "opacity",
+          "target": "main",
+          "property": "opacity",
+          "from": 0,
+          "to": 1,
+          "durationFrames": 15,
+          "delayFrames": 0,
+          "easing": "easeOut",
+          "loop": false,
+          "yoyo": false
+        }
+      ],
+      "transitions": [
+        {
+          "id": "trans-mw81unek-zme2au0-reveal",
+          "type": "reveal",
+          "durationFrames": 30,
+          "easing": "easeInOut",
+          "direction": "both"
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "backgroundMusic": {
+      "src": "./assets/audio/orchestral-epic.mp3",
+      "volume": 0.6,
+      "loop": true,
+      "fadeInFrames": 60,
+      "fadeOutFrames": 60,
+      "startFrame": 0
+    },
+    "sfx": [
+      {
+        "id": "sfx-impact-mw81unek-rcczcju",
+        "src": "./assets/sfx/impact.mp3",
+        "trigger": "beat",
+        "volume": 0.8,
+        "pitch": 1
+      }
+    ],
+    "beatSync": false,
+    "masterVolume": 1
+  },
+  "globalStyle": {
+    "colorPalette": {
+      "primary": [
+        {
+          "r": 0.10196078431372549,
+          "g": 0.10196078431372549,
+          "b": 0.1803921568627451
+        },
+        {
+          "r": 0.08627450980392157,
+          "g": 0.12941176470588237,
+          "b": 0.24313725490196078
+        },
+        {
+          "r": 0.058823529411764705,
+          "g": 0.20392156862745098,
+          "b": 0.3764705882352941
+        }
+      ],
+      "secondary": [
+        {
+          "r": 0.08627450980392157,
+          "g": 0.12941176470588237,
+          "b": 0.24313725490196078
+        },
+        {
+          "r": 0.058823529411764705,
+          "g": 0.20392156862745098,
+          "b": 0.3764705882352941
+        }
+      ],
+      "accent": [
+        {
+          "r": 0.10196078431372549,
+          "g": 0.10196078431372549,
+          "b": 0.1803921568627451
+        }
+      ],
+      "background": {
+        "r": 0.10196078431372549,
+        "g": 0.10196078431372549,
+        "b": 0.1803921568627451
+      },
+      "mode": "dark"
+    },
+    "lighting": "studio",
+    "cameraStyle": "static",
+    "postProcessing": {
+      "bloom": {
+        "enabled": false,
+        "strength": 0.5,
+        "radius": 0.5,
+        "threshold": 0.8
+      },
+      "colorGrading": {
+        "enabled": true,
+        "exposure": 0,
+        "contrast": 1.1,
+        "saturation": 1.1,
+        "temperature": 0,
+        "tint": 0
+      },
+      "vignette": {
+        "enabled": false,
+        "darkness": 0.3,
+        "offset": 0
+      }
+    }
+  },
+  "assets": [
+    {
+      "id": "asset-mw81unej-xh6jmpi-model",
+      "type": "model",
+      "src": "./assets/models/default.glb",
+      "name": "Main 3D Model",
+      "sceneId": "scene-mw81unej-7x9zviw",
+      "required": true
+    },
+    {
+      "id": "asset-mw81unek-e6rpq24-model",
+      "type": "model",
+      "src": "./assets/models/default.glb",
+      "name": "Main 3D Model",
+      "sceneId": "scene-mw81unek-74z00p7",
+      "required": true
+    },
+    {
+      "id": "asset-mw81unek-2ooenc0-model",
+      "type": "model",
+      "src": "./assets/models/default.glb",
+      "name": "Main 3D Model",
+      "sceneId": "scene-mw81unek-1hgzl5n",
+      "required": true
+    },
+    {
+      "id": "asset-mw81unek-2ooenc0-particles",
+      "type": "shader",
+      "src": "./assets/shaders/particles.glsl",
+      "name": "Particle System",
+      "sceneId": "scene-mw81unek-1hgzl5n",
+      "required": true
+    },
+    {
+      "id": "asset-mw81unek-3i1yv4t-model",
+      "type": "model",
+      "src": "./assets/models/default.glb",
+      "name": "Main 3D Model",
+      "sceneId": "scene-mw81unek-u3lj7lb",
+      "required": true
+    },
+    {
+      "id": "asset-mw81unek-xbhx24w-font",
+      "type": "font",
+      "src": "./assets/fonts/Inter-Bold.ttf",
+      "name": "Title Font",
+      "sceneId": "scene-mw81unek-oo27rq6",
+      "required": true
+    }
+  ],
+  "generatedAt": "2026-11-08T16:31:23.927Z"
+}

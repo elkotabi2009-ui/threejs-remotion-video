@@ -1,0 +1,224 @@
+import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
+import { OrbitControls, Environment, Html, ContactShadows, Effects, Bloom, Vignette, ChromaticAberration } from "@react-three/drei";
+import * as THREE from "three";
+import { useMemo, useRef, Suspense } from "react";
+
+// Extend Three.js classes for R3F
+extend(THREE);
+
+interface Scene3DProps {
+  width: number;
+  height: number;
+  onFrame?: (frame: number, delta: number) => void;
+  sceneSpec?: any;
+}
+
+export const Scene3D: React.FC<Scene3DProps> = ({ width, height, onFrame, sceneSpec }) => {
+  const { camera, scene } = useThree();
+  const frameRef = useRef(0);
+
+  useFrame((state, delta) => {
+    frameRef.current = state.clock.getElapsedTime() * 30; // approximate frame
+    if (onFrame) {
+      onFrame(Math.floor(frameRef.current), delta);
+    }
+  });
+
+  const { position, target, fov } = useMemo(() => {
+    if (sceneSpec?.camera) {
+      return {
+        position: new THREE.Vector3(sceneSpec.camera.position?.x || 0, sceneSpec.camera.position?.y || 2, sceneSpec.camera.position?.z || 5),
+        target: new THREE.Vector3(sceneSpec.camera.target?.x || 0, sceneSpec.camera.target?.y || 0, sceneSpec.camera.target?.z || 0),
+        fov: sceneSpec.camera.fov || 50,
+      };
+    }
+    return {
+      position: new THREE.Vector3(0, 2, 5),
+      target: new THREE.Vector3(0, 0, 0),
+      fov: 50,
+    };
+  }, [sceneSpec?.camera]);
+
+  const lightingConfig = useMemo(() => {
+    if (!sceneSpec?.lighting) return null;
+    return sceneSpec.lighting;
+  }, [sceneSpec?.lighting]);
+
+  const postProcessing = sceneSpec?.globalStyle?.postProcessing;
+
+  return (
+    <Canvas
+      camera={{ position, fov, near: 0.1, far: 1000 }}
+      style={{ width, height }}
+      gl={{ antialias: true, alpha: true, preserveDrawingBuffer: true }}
+    >
+      <CameraRig position={position} target={target} />
+      <LightRig config={lightingConfig} />
+
+      {{#assets}}
+      {{{assets}}}
+      {{/assets}}
+
+      {{#postProcessing}}
+      <Effects multisampling={8}>
+        {{#bloom}}
+        <Bloom
+          intensity={{bloom.strength}}
+          radius={{bloom.radius}}
+          threshold={{bloom.threshold}}
+        />
+        {{/bloom}}
+        {{#vignette}}
+        <Vignette
+          darkness={{vignette.darkness}}
+          offset={{vignette.offset}}
+        />
+        {{/vignette}}
+        {{#chromaticAberration}}
+        <ChromaticAberration
+          offset={{chromaticAberration.offset}}
+        />
+        {{/chromaticAberration}}
+      </Effects>
+      {{/postProcessing}}
+
+      <Environment preset="{{environmentPreset}}" />
+      <ContactShadows opacity={0.3} scale={10} blur={2} far={10} />
+    </Canvas>
+  );
+};
+
+// Camera Rig Component
+function CameraRig({ position, target }: { position: THREE.Vector3; target: THREE.Vector3 }) {
+  const { camera } = useThree();
+
+  useFrame(() => {
+    camera.position.lerp(position, 0.1);
+    camera.lookAt(target);
+  });
+
+  return null;
+}
+
+// Light Rig Component
+function LightRig({ config }: { config: any }) {
+  if (!config) {
+    return (
+      <>
+        <ambientLight intensity={0.5} color="#ffffff" />
+        <directionalLight position={[5, 10, 7]} intensity={1} color="#fff5e6" />
+        <directionalLight position={[-5, 5, -5]} intensity={0.5} color="#80b3ff" />
+      </>
+    );
+  }
+
+  return (
+    <>
+      {config.ambient && <ambientLight intensity={0.3} color={`rgb(${config.ambient.r * 255}, ${config.ambient.g * 255}, ${config.ambient.b * 255)}`} />}
+      {config.directional?.map((light: any, i: number) => (
+        <directionalLight
+          key={i}
+          position={[light.position.x, light.position.y, light.position.z]}
+          intensity={light.intensity}
+          color={`rgb(${light.color.r * 255}, ${light.color.g * 255}, ${light.color.b * 255)}`}
+        />
+      ))}
+      {config.point?.map((light: any, i: number) => (
+        <pointLight
+          key={i}
+          position={[light.position.x, light.position.y, light.position.z]}
+          intensity={light.intensity}
+          color={`rgb(${light.color.r * 255}, ${light.color.g * 255}, ${light.color.b * 255)}`}
+          distance={light.distance}
+          decay={light.decay}
+        />
+      ))}
+    </>
+  );
+}
+
+// Animated Model Component with keyframe animations
+interface AnimatedModelProps {
+  url: string;
+  animations?: any[];
+  position?: [number, number, number];
+  rotation?: [number, number, number];
+  scale?: [number, number, number];
+}
+
+function AnimatedModel({ url, animations = [], position = [0, 0, 0], rotation = [0, 0, 0], scale = [1, 1, 1] }: AnimatedModelProps) {
+  const { nodes, materials, animations: gltfAnimations } = useGLTF(url);
+  const groupRef = useRef<THREE.Group>(null);
+  const mixerRef = useRef<THREE.AnimationMixer | null>(null);
+  const actionsRef = useRef<Map<string, THREE.AnimationAction>>(new Map());
+
+  useFrame((state, delta) => {
+    if (mixerRef.current) {
+      mixerRef.current.update(delta);
+    }
+
+    // Apply procedural animations from spec
+    if (groupRef.current && animations.length > 0) {
+      const time = state.clock.getElapsedTime();
+      for (const anim of animations) {
+        const progress = ((time * 1000 - anim.delay) / anim.duration) % (anim.loop ? 1 : 1);
+        if (progress >= 0 && progress <= 1) {
+          const eased = easeProgress(progress, anim.easing);
+          applyAnimation(groupRef.current, anim, eased, anim.yoyo ? 1 - eased : eased);
+        }
+      }
+    }
+  });
+
+  // Initialize mixer for GLTF animations
+  useFrame((state) => {
+    if (gltfAnimations.length > 0 && !mixerRef.current && groupRef.current) {
+      mixerRef.current = new THREE.AnimationMixer(groupRef.current);
+      for (const clip of gltfAnimations) {
+        const action = mixerRef.current.clipAction(clip);
+        action.play();
+        actionsRef.current.set(clip.name, action);
+      }
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={position} rotation={rotation} scale={scale}>
+      <primitive object={nodes} />
+    </group>
+  );
+}
+
+function applyAnimation(object: THREE.Object3D, anim: any, progress: number, yoyoProgress: number) {
+  const value = anim.from + (anim.to - anim.from) * (anim.yoyo ? yoyoProgress : progress);
+
+  const parts = anim.property.split('.');
+  let target: any = object;
+  for (let i = 0; i < parts.length - 1; i++) {
+    target = target[parts[i]];
+    if (!target) return;
+  }
+  target[parts[parts.length - 1]] = value;
+}
+
+function easeProgress(t: number, easing: string): number {
+  switch (easing) {
+    case "linear": return t;
+    case "easeIn": return t * t;
+    case "easeOut": return 1 - (1 - t) * (1 - t);
+    case "easeInOut": return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    case "easeOutElastic": {
+      const c4 = (2 * Math.PI) / 3;
+      return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+    }
+    default: return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+  }
+}
+
+// GLTF Loader
+function useGLTF(url: string) {
+  const { nodes, materials, animations } = useLoader(THREE.GLTFLoader, url);
+  return { nodes, materials, animations };
+}
+
+import { useLoader } from "@react-three/fiber";

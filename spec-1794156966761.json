@@ -1,0 +1,155 @@
+{
+  "title": "10s YouTube 169 camera orbit around sphere part",
+  "description": "10s YouTube 16:9: camera orbit around sphere, particle burst at 5s, electronic beat",
+  "durationSeconds": 15,
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "aspectRatio": "9:16",
+  "targetPlatform": "shorts",
+  "globalStyle": {
+    "colorPalette": {
+      "background": {
+        "r": 0.02,
+        "g": 0.02,
+        "b": 0.05
+      },
+      "primary": {
+        "r": 0.9,
+        "g": 0.27,
+        "b": 0.38
+      },
+      "secondary": {
+        "r": 0.06,
+        "g": 0.13,
+        "b": 0.24
+      },
+      "accent": {
+        "r": 0.91,
+        "g": 0.69,
+        "b": 0.25
+      },
+      "text": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      }
+    },
+    "postProcessing": {
+      "bloom": {
+        "enabled": true,
+        "strength": 0.5,
+        "radius": 0.8,
+        "threshold": 0.8
+      },
+      "vignette": {
+        "enabled": true,
+        "darkness": 0.3,
+        "offset": 0.5
+      },
+      "chromaticAberration": {
+        "enabled": false,
+        "offset": 0.01
+      }
+    },
+    "environmentPreset": "city"
+  },
+  "scenes": [
+    {
+      "id": "scene-1",
+      "name": "Main Scene",
+      "type": "3d",
+      "durationFrames": 450,
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 2,
+          "z": 5
+        },
+        "target": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "fov": 50
+      },
+      "lighting": {
+        "ambient": {
+          "r": 0.3,
+          "g": 0.3,
+          "b": 0.4
+        },
+        "directional": [
+          {
+            "position": {
+              "x": 5,
+              "y": 10,
+              "z": 7
+            },
+            "intensity": 1,
+            "color": {
+              "r": 1,
+              "g": 0.96,
+              "b": 0.9
+            }
+          },
+          {
+            "position": {
+              "x": -5,
+              "y": 5,
+              "z": -5
+            },
+            "intensity": 0.5,
+            "color": {
+              "r": 0.5,
+              "g": 0.7,
+              "b": 1
+            }
+          }
+        ]
+      },
+      "objects": [
+        {
+          "id": "particles-1",
+          "type": "particles",
+          "count": 500,
+          "size": 0.05,
+          "color": "#ffffff",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.1,
+            "z": 0
+          },
+          "lifetime": 2
+        }
+      ],
+      "transitions": [],
+      "assets": []
+    }
+  ],
+  "audio": {
+    "backgroundMusic": null,
+    "voiceover": null,
+    "sfx": [],
+    "masterVolume": 1,
+    "beatSync": {
+      "enabled": false,
+      "bpm": 120,
+      "division": 4
+    }
+  },
+  "renderSettings": {
+    "codec": "h264",
+    "crf": 20,
+    "preset": "medium",
+    "pixelFormat": "yuv420p",
+    "concurrency": 4,
+    "imageFormat": "png",
+    "quality": 80
+  }
+}

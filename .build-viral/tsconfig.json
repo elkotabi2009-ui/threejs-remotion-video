@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@scenes/*": ["src/scenes/*"],
+      "@compositions/*": ["src/compositions/*"],
+      "@timeline/*": ["src/timeline/*"],
+      "@audio/*": ["src/audio/*"],
+      "@editing/*": ["src/editing/*"],
+      "@utils/*": ["src/utils/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@store/*": ["src/store/*"],
+      "@types/*": ["src/types/*"]
+    },
+    "types": ["vite/client", "remotion"]
+  },
+  "include": ["src/**/*", "scripts/**/*", "blender/**/*"],
+  "exclude": ["node_modules", "dist", "out", ".remotion", "src/automation/**/*", "src/scenes/generated/**/*", "src/compositions/generated/**/*"]
+}

@@ -1,0 +1,29 @@
+{
+  "outputDir": "public/assets/models/generated",
+  "assetTypes": ["primitives", "particles", "terrain", "city"],
+  "count": 20,
+  "seed": 42,
+  "generationSettings": {
+    "primitives": {
+      "types": ["cube", "sphere", "cylinder", "cone", "torus", "plane"],
+      "sizeRange": [0.3, 2],
+      "positionRange": [-5, 5]
+    },
+    "particles": {
+      "count": 500,
+      "lifetime": 250,
+      "size": 0.05
+    },
+    "terrain": {
+      "size": 100,
+      "resolution": 200,
+      "height": 10
+    },
+    "city": {
+      "blocksX": 5,
+      "blocksY": 5,
+      "blockSize": 10,
+      "heightRange": [5, 50]
+    }
+  }
+}
