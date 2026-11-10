@@ -1,7 +1,7 @@
 import { Composition, AbsoluteFill, useVideoConfig, useCurrentFrame } from "remotion";
 import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
-import { OrbitControls, Html, ContactShadows, Environment } from "@react-three/drei";
+import { Html, Environment } from "@react-three/drei";
 import { useRemotionTiming, useInterpolate } from "@/hooks/useRemotion";
 
 export function TestVideo({ width, height }: { width: number; height: number }) {
@@ -14,78 +14,82 @@ export function TestVideo({ width, height }: { width: number; height: number }) 
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
 
+  const colorShift = useInterpolate(
+    [
+      { frame: 0, value: 0 },
+      { frame: durationInFrames / 3, value: 1 },
+      { frame: 2 * durationInFrames / 3, value: 0.5 },
+      { frame: durationInFrames, value: 0 }
+    ],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  );
+
+  const hue = (colorShift * 360) % 360;
+  const color = `hsl(${hue}, 80%, 55%)`;
+  const glowColor = `hsl(${hue}, 80%, 65%)`;
+
   return (
-    <AbsoluteFill style={{ background: "#0a0a0f" }}>
+    <AbsoluteFill style={{ background: "#050508" }}>
       <Canvas
-        camera={{ position: [0, 2, 5], fov: 50, near: 0.1, far: 1000 }}
+        camera={{ position: [0, 1.5, 5], fov: 50, near: 0.1, far: 100 }}
         gl={{ preserveDrawingBuffer: true, alpha: true, antialias: true }}
         style={{ width, height }}
         onCreated={({ gl }) => {
           gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-          gl.shadowMap.enabled = true;
-          gl.shadowMap.type = THREE.PCFSoftShadowMap;
+          gl.shadowMap.enabled = false;
           gl.toneMapping = THREE.ACESFilmicToneMapping;
           gl.toneMappingExposure = 1;
         }}
       >
-        <Environment preset="city" background={false} />
+        <Environment preset="city" background={false} ground={false} />
 
-        <group rotation={[0, rotation, 0]}>
-          {/* Neon spinning cube */}
-          <mesh castShadow receiveShadow>
-            <boxGeometry args={[2, 2, 2]} />
+        <group rotation={[0, rotation, rotation * 0.7]}>
+          {/* Main cube */}
+          <mesh position={[-2, 0, 0]}>
+            <boxGeometry args={[1.5, 1.5, 1.5]} />
             <meshPhysicalMaterial
-              color="#e94560"
+              color={color}
               metalness={0.3}
-              roughness={0.4}
-              transmission={0.3}
-              thickness={0.5}
+              roughness={0.2}
+              transmission={0.2}
+              thickness={0.3}
               clearcoat={1}
               clearcoatRoughness={0.1}
             />
           </mesh>
 
-          {/* Inner glow */}
-          <mesh>
-            <boxGeometry args={[2.2, 2.2, 2.2]} />
+          {/* Wireframe cube */}
+          <mesh position={[2, 0, 0]} castShadow={false} receiveShadow={false}>
+            <boxGeometry args={[1.5, 1.5, 1.5]} />
+            <meshBasicMaterial color={glowColor} wireframe transparent opacity={0.6} />
+          </mesh>
+
+          {/* Center sphere */}
+          <mesh position={[0, 0, 0]}>
+            <sphereGeometry args={[0.8, 32, 32]} />
             <meshBasicMaterial
-              color="#ff00ff"
+              color={glowColor}
               transparent
-              opacity={0.1}
-              side={THREE.BackSide}
+              opacity={0.3}
             />
           </mesh>
         </group>
 
-        <directionalLight
-          position={[5, 10, 7]}
-          intensity={2}
-          castShadow
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
-          shadow-camera-near={0.1}
-          shadow-camera-far={50}
-          shadow-camera-left={-10}
-          shadow-camera-right={10}
-          shadow-camera-top={10}
-          shadow-camera-bottom={-10}
-        />
-        <ambientLight intensity={0.5} color="#ffffff" />
-        <pointLight position={[-5, 5, -5]} intensity={1} color="#00ffff" />
-        <ContactShadows opacity={0.5} scale={10} blur={2} color="#000000" />
-
-        <OrbitControls enablePan={false} enableZoom={false} enableRotate={false} />
+        <directionalLight position={[5, 10, 7]} intensity={1.5} color="#ffffff" />
+        <ambientLight intensity={0.3} color="#ffffff" />
+        <pointLight position={[-5, 5, -5]} intensity={1} color={glowColor} />
 
         {/* Text overlay */}
         <Html
-          position={[0, 3, 0]}
+          position={[0, 3.5, 0]}
           style={{
             color: 'white',
             fontSize: '48px',
-            fontWeight: 'bold',
-            textShadow: '0 0 20px #e94560',
+            fontWeight: '800',
+            textShadow: `0 0 30px ${glowColor}, 0 0 60px ${glowColor}`,
             pointerEvents: 'none',
-            fontFamily: 'system-ui',
+            fontFamily: 'system-ui, sans-serif',
+            letterSpacing: '0.05em',
           }}
           center
         >
@@ -93,16 +97,30 @@ export function TestVideo({ width, height }: { width: number; height: number }) 
         </Html>
 
         <Html
-          position={[0, -2.5, 0]}
+          position={[0, -2, 0]}
           style={{
-            color: '#888',
-            fontSize: '24px',
+            color: glowColor,
+            fontSize: '22px',
+            fontWeight: '500',
             pointerEvents: 'none',
-            fontFamily: 'system-ui',
+            fontFamily: 'system-ui, sans-serif',
           }}
           center
         >
           Three.js + Remotion Pipeline
+        </Html>
+
+        <Html
+          position={[0, -3.5, 0]}
+          style={{
+            color: '#666',
+            fontSize: '16px',
+            fontFamily: 'monospace',
+            pointerEvents: 'none',
+          }}
+          center
+        >
+          Frame: {frame} / {durationInFrames}  •  {width}x{height} @ {fps}fps
         </Html>
       </Canvas>
     </AbsoluteFill>
