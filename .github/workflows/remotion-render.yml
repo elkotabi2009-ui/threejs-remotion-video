@@ -4,11 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       composition:
-        description: "Composition ID to render (start with test-video to verify pipeline)"
+        description: "Composition ID to render (start with verification-video to verify pipeline)"
         required: true
-        default: "test-video"
+        default: "verification-video"
         type: choice
         options:
+          - verification-video
+          - verification-video-square
+          - verification-video-landscape
           - test-video
           - test-video-square
           - test-video-landscape
@@ -93,12 +96,13 @@ jobs:
           echo "=== REMotion CLI ==="
           npx remotion --version 2>&1 || true
 
-      - name: Install Chromium dependencies (Ubuntu 22.04 compatible)
+      - name: Install Chromium dependencies + Xvfb (Ubuntu 22.04 compatible)
         run: |
           set -euo pipefail
-          echo "=== INSTALLING CHROMIUM DEPS (Ubuntu 22.04) ==="
+          echo "=== INSTALLING CHROMIUM DEPS + XVFB (Ubuntu 22.04) ==="
           sudo apt-get update -y
           sudo apt-get install -y --no-install-recommends \
+            xvfb \
             libnspr4 libnss3 libdrm2 libxkbcommon0 libxcomposite1 \
             libxdamage1 libxrandr2 libgbm1 libxss1 libasound2 \
             libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 \
@@ -108,8 +112,8 @@ jobs:
             libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 \
             libxss1 libxtst6 ca-certificates fonts-liberation \
             libappindicator3-1 lsb-release xdg-utils wget \
-            chromium-browser 2>&1 || echo "Chromium deps install had warnings (continuing)"
-          echo "=== CHROMIUM DEPS DONE ==="
+            chromium-browser 2>&1 | tail -20
+          echo "=== CHROMIUM DEPS + XVFB DONE ==="
 
       - name: TypeScript compile check (non-blocking)
         run: |
@@ -124,13 +128,6 @@ jobs:
           fi
           echo "=== TYPESCRIPT CHECK DONE ==="
 
-      - name: Ensure output directory exists
-        run: |
-          set -euo pipefail
-          mkdir -p out
-          echo "=== OUTPUT DIR READY ==="
-          ls -la out/
-
       - name: DEBUG - Verify source & compositions
         run: |
           set -euo pipefail
@@ -139,6 +136,13 @@ jobs:
           echo "=== COMPOSITIONS ==="
           npx remotion compositions src/Root.tsx 2>&1
           echo "=== COMPOSITIONS LISTED ==="
+
+      - name: Ensure output directory exists
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          echo "=== OUTPUT DIR READY ==="
+          ls -la out/
 
       - name: Render video
         id: render
@@ -150,32 +154,39 @@ jobs:
           echo "Start: $(date)"
 
           # Set render params based on composition
-          if [[ "$COMPOSITION" == "test-video" ]]; then
+          if [[ "$COMPOSITION" == "verification-video" ]] || [[ "$COMPOSITION" == "verification-video-square" ]] || [[ "$COMPOSITION" == "verification-video-landscape" ]]; then
             CONCURRENCY=4
             QUALITY=80
-          elif [[ "$COMPOSITION" == "hholmes-video" ]]; then
+          elif [[ "$COMPOSITION" == "test-video" ]] || [[ "$COMPOSITION" == "test-video-square" ]] || [[ "$COMPOSITION" == "test-video-landscape" ]]; then
             CONCURRENCY=2
             QUALITY=70
+          elif [[ "$COMPOSITION" == "hholmes-video" ]] || [[ "$COMPOSITION" == "hholmes-preview" ]]; then
+            CONCURRENCY=1
+            QUALITY=60
           else
-            CONCURRENCY=4
-            QUALITY=80
+            CONCURRENCY=1
+            QUALITY=60
           fi
 
           echo "Concurrency: $CONCURRENCY, Quality: $QUALITY"
           echo "Free memory: $(free -h | grep Mem | awk '{print $7}')"
 
-          # Render with explicit error capture
-          npx remotion render src/Root.tsx $COMPOSITION out/video.mp4 \
-            --concurrency=$CONCURRENCY \
-            --quality=$QUALITY \
-            --log-level=verbose 2>&1 | tee render.log
+          # Render with Xvfb + GPU flags + explicit error capture
+          xvfb-run -a -s "-screen 0 1920x1080x24" \
+            npx remotion render src/Root.tsx $COMPOSITION out/video.mp4 \
+              --concurrency=$CONCURRENCY \
+              --quality=$QUALITY \
+              --timeout=300000 \
+              --log-level=verbose \
+              --chromium-options="--enable-gpu --use-gl=angle --use-angle=swiftshader --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu-sandbox" \
+              2>&1 | tee render.log
           RENDER_EXIT=${PIPESTATUS[0]}
           echo "End: $(date)"
 
           if [ $RENDER_EXIT -ne 0 ]; then
             echo "=== RENDER FAILED (exit $RENDER_EXIT) ==="
-            echo "Last 50 lines of render.log:"
-            tail -50 render.log
+            echo "Last 100 lines of render.log:"
+            tail -100 render.log
             exit $RENDER_EXIT
           fi
 
