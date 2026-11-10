@@ -3,6 +3,7 @@ import { extend } from "@react-three/fiber";
 import * as THREE from "three";
 import { TestVideoComposition, TestVideoSquare, TestVideoLandscape } from "./compositions/TestVideo";
 import { HHolmesVideoComposition, HHolmesVideoPreview } from "./compositions/HHolmesVideo";
+import { HHolmesVideoLiteComposition, HHolmesVideoLitePreview } from "./compositions/HHolmesVideoLite";
 import { VerificationVideoComposition, VerificationVideoSquare, VerificationVideoLandscape } from "./compositions/VerificationVideo";
 
 // Extend Three.js namespace for R3F - must be done before any components render
@@ -53,6 +54,8 @@ const Root = () => {
       <TestVideoLandscape />
       <HHolmesVideoComposition />
       <HHolmesVideoPreview />
+      <HHolmesVideoLiteComposition />
+      <HHolmesVideoLitePreview />
       <VerificationVideoComposition />
       <VerificationVideoSquare />
       <VerificationVideoLandscape />
@@ -62,4 +65,4 @@ const Root = () => {
 
 registerRoot(Root);
 
-export { TestVideoComposition, TestVideoSquare, TestVideoLandscape, HHolmesVideoComposition, HHolmesVideoPreview, VerificationVideoComposition, VerificationVideoSquare, VerificationVideoLandscape };
+export { TestVideoComposition, TestVideoSquare, TestVideoLandscape, HHolmesVideoComposition, HHolmesVideoPreview, HHolmesVideoLiteComposition, HHolmesVideoLitePreview, VerificationVideoComposition, VerificationVideoSquare, VerificationVideoLandscape };
